@@ -1,12 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const port = 3000;
+
+// ❗ Render CẤM dùng port cố định
+// const port = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
-// Dữ liệu sản phẩm (Mình lấy từ file data.js của bạn)
+// Dữ liệu sản phẩm
 const products = [
   {
     id: 1,
@@ -50,32 +53,28 @@ const products = [
     img: "img/ảnh 10.png", 
     sizes: ["M", "L", "XL"]
   },
-  // Bạn có thể copy thêm các sản phẩm khác vào đây sau
 ];
 
-// API 1: Lấy danh sách sản phẩm
+// API danh sách sản phẩm
 app.get('/api/products', (req, res) => {
-    res.json(products);
+  res.json(products);
 });
 
-// API 2: Lấy chi tiết 1 sản phẩm
+// API chi tiết 1 sản phẩm
 app.get('/api/products/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    const product = products.find(p => p.id === id);
-    if (product) {
-        res.json(product);
-    } else {
-        res.status(404).json({ message: "Sản phẩm không tồn tại" });
-    }
+  const id = parseInt(req.params.id);
+  const product = products.find(p => p.id === id);
+  if (product) res.json(product);
+  else res.status(404).json({ message: "Sản phẩm không tồn tại" });
 });
 
-// API 3: Đặt hàng
+// API đặt hàng
 app.post('/api/order', (req, res) => {
-    console.log("Đơn hàng nhận được:", req.body);
-    res.json({ success: true, message: "Đặt hàng thành công!" });
+  console.log("Đơn hàng nhận được:", req.body);
+  res.json({ success: true, message: "Đặt hàng thành công!" });
 });
 
-// Chạy server
-app.listen(port, () => {
-    console.log(`Server đang chạy tại http://localhost:${port}`);
+// Chạy server đúng chuẩn Render
+app.listen(PORT, () => {
+  console.log(`Server đang chạy tại PORT ${PORT}`);
 });
