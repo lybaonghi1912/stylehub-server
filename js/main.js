@@ -1,7 +1,7 @@
 // js/main.js
 
 // ĐỊA CHỈ SERVER (Đây là cái server bạn đang chạy đó)
-const API_URL = "http://localhost:3000/api";
+const API_URL = "/api";
 
 // 1. Hàm định dạng tiền tệ (700000 -> 700.000₫)
 function formatVND(n) {

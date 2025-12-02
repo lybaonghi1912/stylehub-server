@@ -3,19 +3,21 @@ const cors = require('cors');
 const app = express();
 const path = require('path');
 
-const PORT = process.env.PORT || 3000;
+// Sử dụng process.env.PORT để Render có thể chọn cổng thích hợp
+const PORT = process.env.PORT || 3000; 
 
 app.use(cors());
 app.use(express.json());
 
 // ************************************************************
-// FIX 1: PHỤC VỤ FILE TĨNH TỪ THƯ MỤC GỐC
-// Dòng này cho phép Express tìm thấy index.html, css/style.css, js/main.js, img/
+// FIX 1: PHỤC VỤ FILE TĨNH VÀ KHẮC PHỤC LỖI "Cannot GET /"
+// Dòng này phục vụ tất cả file tĩnh từ thư mục gốc (__dirname).
 // ************************************************************
+// Lưu ý: path.resolve(__dirname) cũng hoạt động tốt và là cách chuẩn.
 app.use(express.static(path.join(__dirname)));
 
 
-// Dữ liệu sản phẩm (Đã đồng bộ 12 sản phẩm từ data.js)
+// Dữ liệu sản phẩm (Mock data)
 const products = [
   { id: 1, name: "CLASSIC BLACK JACKET", price: 700000, img: "img/ảnh 1.png", sizes: ["S", "M", "L", "XL"] },
   { id: 2, name: "GREY HOODIE JACKET", price: 750000, img: "img/ảnh 6.png", sizes: ["M", "L", "XL"] },
@@ -52,7 +54,9 @@ app.post('/api/order', (req, res) => {
 });
 
 // ************************************************************
-// FIX 2 (Lỗi Cannot GET /): Định nghĩa Route cho trang chủ
+// FIX 1 (tiếp): Định nghĩa Route cho trang chủ
+// Nếu Express không tìm thấy file tĩnh (index.html) ở route /, 
+// dòng này sẽ đảm bảo nó được trả về.
 // ************************************************************
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
