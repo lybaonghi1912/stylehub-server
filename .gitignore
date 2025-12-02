@@ -1,0 +1,6 @@
+# Dependencies
+/node_modules
+/server/node_modules
+
+# Lock files (CHỈ BỎ QUA CỦA SERVER, KHÔNG BỎ QUA CỦA GỐC)
+/server/package-lock.json

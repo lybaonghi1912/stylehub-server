@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cart & Checkout – STYLE HUB</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/data.js"></script>
+<style>
+/* Body + background */
+body {
+  background: linear-gradient(to right, #f7f7f7, #ffffff);
+  font-family: Arial, sans-serif;
+  color:#000;
+  margin:0; padding:0;
+}
+
+/* Container */
+.container { width:90%; max-width:1200px; margin:0 auto; }
+
+/* Header */
+header {background:#000; color:#fff; padding:15px 0; position:sticky; top:0; z-index:100;}
+header .header-flex {display:flex; justify-content:space-between; align-items:center;}
+header .logo {font-size:24px; font-weight:bold; color:#fff;}
+header nav ul {display:flex; list-style:none;}
+header nav ul li {margin-left:20px;}
+header nav ul li a {color:#fff; text-decoration:none; font-weight:500;}
+header nav ul li a:hover {color:#FFD700;}
+
+/* Cart banner */
+.cart-banner {
+  text-align:center;
+  margin:30px auto 20px auto;
+  padding:20px;
+  background:linear-gradient(90deg,#FFD700,#FFC107);
+  border-radius:8px;
+  font-weight:bold;
+  font-size:20px;
+  color:#000;
+}
+
+/* Cart container */
+.cart-container {
+  display:flex;
+  gap:40px;
+  justify-content:center;
+  margin-bottom:50px;
+  flex-wrap:wrap;
+}
+
+/* Left + Right boxes */
+.cart-left, .cart-right {
+  background:#fff;
+  padding:20px;
+  border-radius:8px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
+}
+
+.cart-left { flex:2 1 600px; }
+.cart-right { flex:1 1 350px; min-width:300px; }
+
+/* Cart Table */
+.cart-table { width:100%; border-collapse: collapse; }
+.cart-table th, .cart-table td { padding:12px; text-align:center; border-bottom:1px solid #eee; }
+.cart-table img { width:80px; border-radius:6px; }
+.qty-input { width:50px; padding:4px; text-align:center; }
+.btn-remove { background:#FF4C4C; color:#fff; border:none; border-radius:6px; padding:6px 12px; cursor:pointer; }
+.cart-summary { text-align:right; font-size:16px; margin-bottom:20px; }
+.cart-summary .total { font-weight:bold; font-size:18px; margin-top:10px; }
+.btn-checkout, .btn-continue, .btn-submit-order {
+  background:#000; color:#FFD700; padding:12px 20px;
+  border:none; border-radius:6px; cursor:pointer; margin-top:10px; width:100%;
+}
+.btn-continue { background:#333; color:#FFD700; margin-bottom:15px; }
+
+/* Checkout form */
+.checkout-form { margin-top:20px; display:none; }
+.checkout-form h3 { margin-bottom:15px; }
+.checkout-form label { font-weight:bold; display:block; margin-top:10px; }
+.checkout-form input, .checkout-form textarea { width:100%; padding:10px; margin-top:5px; border-radius:6px; border:1px solid #ccc; font-size:14px; }
+
+/* Footer */
+footer {background:#000; color:#fff; padding:20px 0; text-align:center; margin-top:50px;}
+footer p {margin-bottom:5px;}
+
+/* Popups */
+.popup-confirm, .popup-complete {
+  position:fixed; top:0; left:0; right:0; bottom:0; display:none;
+  justify-content:center; align-items:center; background: rgba(0,0,0,0.6); z-index:1000;
+}
+.popup-content { background:#fff; padding:30px; border-radius:8px; max-width:400px; width:100%; text-align:center; }
+.popup-content button { margin:10px 5px; padding:8px 16px; border:none; border-radius:6px; cursor:pointer; }
+.btn-cancel { background:#ccc; color:#000; }
+.btn-confirm { background:#FF4C4C; color:#fff; }
+
+/* Responsive */
+@media(max-width:992px){
+  .cart-container { flex-direction:column; align-items:center; gap:20px; }
+  .cart-left, .cart-right { width:100%; }
+  .btn-checkout, .btn-continue { width:100%; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container header-flex">
+    <h1 class="logo">STYLE HUB</h1>
+    <nav>
+      <ul class="menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="cart.html">Cart <span id="cart-count">0</span></a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="cart-banner">🛒 Black Friday Sale – Your Cart & Checkout</div>
+
+<div class="container cart-container">
+  <div class="cart-left">
+    <h2>Your Cart</h2>
+    <table class="cart-table" id="cart-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Size</th>
+          <th>Price</th>
+          <th>Qty</th>
+          <th>Total</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button class="btn-continue" id="btn-continue">Continue Shopping</button>
+  </div>
+
+  <div class="cart-right">
+    <h2>Order Summary</h2>
+    <div class="cart-summary" id="cart-summary"></div>
+
+    <button class="btn-checkout" id="btn-checkout">Proceed to Checkout</button>
+
+    <div class="checkout-form" id="checkout-form">
+      <h3>Checkout Information</h3>
+      <label>Name:</label><input type="text" id="customer-name" placeholder="Full name" required>
+      <label>Email:</label><input type="email" id="customer-email" placeholder="Email" required>
+      <label>Phone:</label><input type="text" id="customer-phone" placeholder="Phone number" required>
+      <label>Address:</label><textarea id="customer-address" placeholder="Shipping address" rows="3" required></textarea>
+      <label>Note:</label><textarea id="customer-note" placeholder="Additional notes" rows="2"></textarea>
+      <label>Payment Method:</label>
+      <input type="text" value="Pay on Delivery" readonly style="background:#eee; cursor:not-allowed; margin-bottom:10px;">
+      <button class="btn-submit-order" id="btn-submit-order">Submit Order</button>
+    </div>
+  </div>
+</div>
+
+<div class="popup-confirm" id="popup-confirm">
+  <div class="popup-content">
+    <p>Are you sure you want to remove this item?</p>
+    <button class="btn-cancel" id="btn-cancel">Cancel</button>
+    <button class="btn-confirm" id="btn-confirm">Remove</button>
+  </div>
+</div>
+
+<div class="popup-complete" id="popup-complete">
+  <div class="popup-content">
+    <h3>Thank you for your order!</h3>
+    <p>Your order has been placed successfully.</p>
+    <p id="order-total"></p>
+    <button id="btn-close-complete">Close</button>
+  </div>
+</div>
+
+<footer>
+  <div class="container footer-content">
+    <p>© 2025 STYLE HUB. All rights reserved.</p>
+    <p>Contact: info@stylehub.com</p>
+  </div>
+</footer>
+
+<script>
+// ===== Cart logic =====
+function formatVND(n){ return n.toLocaleString('vi-VN')+'₫'; }
+
+let cart = [];
+try{ cart = JSON.parse(localStorage.getItem('cart')||'[]'); } catch(e){ cart=[]; }
+
+// --- TÍNH NĂNG ĐỒNG BỘ MỚI ---
+// Tự động kiểm tra và cập nhật thông tin sản phẩm (ảnh, giá) từ data.js
+// Giúp sửa lỗi ảnh bị sai do dữ liệu cũ trong LocalStorage
+if (typeof products !== 'undefined') {
+    cart = cart.map(cartItem => {
+        // Tìm sản phẩm gốc trong data.js
+        const originalProduct = products.find(p => p.id === cartItem.id);
+        if (originalProduct) {
+            // Cập nhật lại ảnh, tên và giá từ nguồn chính để đảm bảo luôn đúng
+            return {
+                ...cartItem,
+                name: originalProduct.name,
+                price: originalProduct.price,
+                img: originalProduct.img // <--- Đây là dòng fix lỗi ảnh tự động
+            };
+        }
+        return cartItem;
+    });
+    // Lưu ngược lại vào localStorage để lần sau không cần cập nhật nữa
+    localStorage.setItem('cart', JSON.stringify(cart));
+}
+// -----------------------------
+
+const cartTableBody = document.querySelector('#cart-table tbody');
+const cartSummary = document.getElementById('cart-summary');
+const cartCountEl = document.getElementById('cart-count');
+const checkoutForm = document.getElementById('checkout-form');
+const popupComplete = document.getElementById('popup-complete');
+const orderTotalEl = document.getElementById('order-total');
+
+function updateCartCount(){ cartCountEl.textContent = cart.reduce((a,b)=>a+(b.qty||1),0); }
+updateCartCount();
+
+let removeIndex = null;
+
+function renderCart(){
+  cartTableBody.innerHTML = '';
+  if(cart.length===0){ 
+    cartTableBody.innerHTML='<tr><td colspan="6">Your cart is empty</td></tr>'; 
+    cartSummary.innerHTML=''; 
+    return; 
+  }
+
+  let subtotal=0;
+  const shipping=50000;
+  const discountRate=0.1;
+
+  cart.forEach((item,index)=>{
+    const qty=item.qty||1;
+    const total=item.price*qty;
+    subtotal+=total;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><img src="${item.img||'img/placeholder.png'}" alt="${item.name}"><br>${item.name}</td>
+      <td>${item.size||'-'}</td>
+      <td>${formatVND(item.price)}</td>
+      <td><input type="number" min="1" value="${qty}" class="qty-input" data-index="${index}"></td>
+      <td>${formatVND(total)}</td>
+      <td><button class="btn-remove" data-index="${index}">Remove</button></td>
+    `;
+    cartTableBody.appendChild(tr);
+  });
+
+  const discount=subtotal*discountRate;
+  const totalPay=subtotal-discount+shipping;
+
+  cartSummary.innerHTML=`
+    <div>Subtotal: ${formatVND(subtotal)}</div>
+    <div>Black Friday Discount: -${formatVND(discount)}</div>
+    <div>Shipping: ${formatVND(shipping)}</div>
+    <div class="total">Total: ${formatVND(totalPay)}</div>
+  `;
+
+  document.querySelectorAll('.qty-input').forEach(input=>{
+    input.addEventListener('change', e=>{
+      let val=parseInt(e.target.value); if(val<1) val=1;
+      const idx=e.target.dataset.index;
+      cart[idx].qty=val;
+      localStorage.setItem('cart',JSON.stringify(cart));
+      renderCart(); updateCartCount();
+    });
+  });
+
+  document.querySelectorAll('.btn-remove').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      removeIndex=e.target.dataset.index;
+      document.getElementById('popup-confirm').style.display='flex';
+    });
+  });
+}
+
+document.getElementById('btn-cancel').addEventListener('click',()=>{ document.getElementById('popup-confirm').style.display='none'; removeIndex=null; });
+document.getElementById('btn-confirm').addEventListener('click',()=>{
+  if(removeIndex!==null){ cart.splice(removeIndex,1); localStorage.setItem('cart',JSON.stringify(cart)); renderCart(); updateCartCount(); removeIndex=null; document.getElementById('popup-confirm').style.display='none'; }
+});
+
+document.getElementById('btn-continue').addEventListener('click',()=>{ location.href='products.html'; });
+document.getElementById('btn-checkout').addEventListener('click',()=>{ checkoutForm.style.display='block'; checkoutForm.scrollIntoView({behavior:'smooth'}); });
+
+document.getElementById('btn-submit-order').addEventListener('click',()=>{
+  const name=document.getElementById('customer-name').value.trim();
+  const email=document.getElementById('customer-email').value.trim();
+  const phone=document.getElementById('customer-phone').value.trim();
+  const address=document.getElementById('customer-address').value.trim();
+  if(!name||!email||!phone||!address){ alert('Please fill in all required fields'); return; }
+
+  let subtotal=0; cart.forEach(item=>{ subtotal+=item.price*(item.qty||1); });
+  const shipping=50000;
+  const discount=subtotal*0.1;
+  const total=subtotal-discount+shipping;
+
+  orderTotalEl.textContent=`Total Paid: ${formatVND(total)}`;
+  popupComplete.style.display='flex';
+
+  cart=[]; localStorage.setItem('cart',JSON.stringify(cart));
+  renderCart();
+});
+
+document.getElementById('btn-close-complete').addEventListener('click',()=>{ popupComplete.style.display='none'; });
+
+renderCart();
+</script>
+
+</body>
+</html>
