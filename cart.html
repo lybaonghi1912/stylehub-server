@@ -5,113 +5,270 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cart & Checkout – STYLE HUB</title>
 <link rel="stylesheet" href="css/style.css">
-<script defer src="js/main.js"></script> 
+<script defer src="js/main.js"></script> <style>
+/* Body + background */
+body {
+  background: linear-gradient(to right, #f7f7f7, #ffffff);
+  font-family: Arial, sans-serif;
+  color:#000;
+  margin:0; padding:0;
+}
+
+/* Container */
+.container { width:90%; max-width:1200px; margin:0 auto; }
+
+/* Header */
+header {background:#000; color:#fff; padding:15px 0; position:sticky; top:0; z-index:100;}
+header .header-flex {display:flex; justify-content:space-between; align-items:center;}
+header .logo {font-size:24px; font-weight:bold; color:#fff;}
+header nav ul {display:flex; list-style:none;}
+header nav ul li {margin-left:20px;}
+header nav ul li a {color:#fff; text-decoration:none; font-weight:500;}
+header nav ul li a:hover {color:#FFD700;}
+
+/* Cart banner */
+.cart-banner {
+  text-align:center;
+  margin:50px auto 30px auto; /* Tăng margin */
+  padding:25px; /* Tăng padding */
+  background:#000; /* THAY ĐỔI: Chuyển sang nền đen */
+  border-radius:12px;
+  font-weight:900;
+  font-size:24px;
+  color:#FFD700; /* Chữ vàng kim */
+  letter-spacing: 2px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+/* Cart container */
+.cart-container {
+  display:flex;
+  gap:30px; 
+  justify-content:center;
+  margin-bottom:70px; /* Tăng margin */
+  flex-wrap:wrap;
+}
+
+/* Left + Right boxes */
+.cart-left, .cart-right {
+  background:#fff;
+  padding:35px; /* Tăng padding */
+  border-radius:12px; 
+  box-shadow:0 10px 30px rgba(0,0,0,0.08); /* Shadow sâu hơn */
+  transition: box-shadow 0.3s ease;
+}
+.cart-left:hover, .cart-right:hover {
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.cart-left h2 { margin-bottom: 25px; font-size: 28px; font-weight: 800; border-bottom: 2px solid #FFD700; padding-bottom: 5px; }
+.cart-right h2 { margin-bottom: 25px; font-size: 28px; font-weight: 800; border-bottom: 2px solid #FFD700; padding-bottom: 5px; }
+.cart-left { flex:2 1 650px; }
+.cart-right { flex:1 1 350px; min-width:300px; }
+
+/* Cart Table */
+.cart-table { width:100%; border-collapse: collapse; margin-top: 15px; }
+.cart-table th { background: #000; color: #FFD700; font-weight: 900; padding:15px; text-align:center; border-bottom:3px solid #FFD700; font-size: 16px; } /* Nền đen, chữ vàng kim */
+.cart-table td { padding:18px 12px; text-align:center; border-bottom:1px solid #eee; font-size: 15px; vertical-align: middle; }
+.cart-table img { width:100px; border-radius:8px; object-fit: cover; }
+.qty-input { width:60px; padding:8px; text-align:center; border: 2px solid #ccc; border-radius: 6px; font-size: 15px; transition: border-color 0.3s; } 
+.qty-input:focus { border-color: #000; outline: none; }
+.btn-remove { 
+  background:#FF4C4C; 
+  color:#fff; 
+  border:none; 
+  border-radius:50px; /* Bo tròn hoàn toàn */
+  padding:8px 15px; 
+  cursor:pointer; 
+  transition: 0.3s;
+  font-weight: 600;
+}
+.btn-remove:hover { background: #d13c3c; transform: scale(1.05); }
+
+/* Cart Summary */
+.cart-summary { 
+    text-align:right; 
+    font-size:16px; 
+    margin-bottom:25px; 
+    padding: 15px 0;
+    border-top: 2px dashed #FFD700; /* Viền vàng dashed */
+    border-bottom: 2px dashed #FFD700;
+}
+.cart-summary div { 
+    margin-bottom: 10px; 
+    display: flex; 
+    justify-content: space-between;
+    font-weight: 500;
+}
+.cart-summary .total { 
+    font-weight:900; 
+    font-size:26px; /* Rất lớn */
+    margin-top:15px; 
+    color: #000;
+}
+.cart-summary .total span:last-child { color: #FFD700; } /* Tổng tiền cuối cùng màu vàng */
+
+.btn-checkout, .btn-continue, .btn-submit-order {
+  background:#000; color:#FFD700; padding:16px 20px; 
+  border:none; border-radius:50px; /* Bo tròn hoàn toàn */
+  cursor:pointer; margin-top:10px; width:100%;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.4s;
+}
+.btn-continue { 
+    background:#333; 
+    color:#FFD700; 
+    margin-bottom:15px; 
+    width: auto; 
+    padding: 12px 25px;
+}
+.btn-checkout:hover { background: #FFD700; color: #000; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4); }
+.btn-submit-order:hover { background: #333; transform: translateY(-2px); }
+.btn-continue:hover { background: #555; }
+
+/* Checkout form */
+.checkout-form { margin-top:30px; display:none; }
+.checkout-form h3 { margin-bottom:20px; font-size: 24px; font-weight: 700; }
+.checkout-form label { font-weight:700; display:block; margin-top:15px; font-size: 15px; }
+.checkout-form input, .checkout-form textarea { 
+    width:100%; 
+    padding:14px; 
+    margin-top:8px; 
+    border-radius:8px; 
+    border:2px solid #ccc; 
+    font-size:16px; 
+    transition: border-color 0.3s;
+}
+.checkout-form input:focus, .checkout-form textarea:focus {
+    border-color: #FFD700;
+    outline: none;
+}
+
+/* Popups */
+.popup-confirm, .popup-complete {
+  position:fixed; top:0; left:0; right:0; bottom:0; display:none;
+  justify-content:center; align-items:center; background: rgba(0,0,0,0.85); z-index:1000; 
+}
+.popup-content { background:#fff; padding:40px; border-radius:12px; max-width:450px; width:100%; text-align:center; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+.popup-content p { font-size: 16px; line-height: 1.6; }
+
+/* Popup Complete Specifics */
+.popup-complete h3 { color: #000; font-size: 32px; margin-bottom: 10px; font-weight: 900; }
+#order-total { padding: 20px; background: #f0f0f0; border: 1px dashed #FFD700; border-radius: 8px; margin-top: 20px; }
+#order-total p { margin: 8px 0; font-size: 16px; }
+#order-total b { color: #000; }
+#order-total .total-amount { font-size: 28px; color: #FFD700; font-weight: 900; margin-top: 15px; display: block; }
+#btn-close-complete { background: #000; color: #FFD700; font-size: 16px; margin-top: 25px; border-radius: 50px; }
+
+/* Responsive */
+@media(max-width:992px){
+  .cart-container { flex-direction:column; align-items:center; gap:20px; }
+  .cart-left, .cart-right { width:100%; }
+  .btn-checkout, .btn-continue { width:100%; }
+  .cart-actions { justify-content: center; } 
+  .btn-continue { width: auto; }
+}
+</style>
 </head>
 <body>
 
 <header>
-  <div class="container header-flex">
-    <h1 class="logo">STYLE HUB</h1>
-    <nav>
-      <ul class="menu">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="products.html">Products</a></li>
-        <li><a href="cart.html">Cart <span id="cart-count">0</span></a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </nav>
-  </div>
+  <div class="container header-flex">
+    <h1 class="logo">STYLE HUB</h1>
+    <nav>
+      <ul class="menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="cart.html">Cart <span id="cart-count">0</span></a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
 </header>
 
-<div class="main-content-wrap">
+<div class="cart-banner">🛒 SECURE CHECKOUT: YOUR ORDER DETAILS</div>
 
-    <div class="cart-banner">🛒 Black Friday Sale – Your Cart & Checkout</div>
-
-    <div class="container cart-container">
-      <div class="cart-left">
-        <h2>Your Cart</h2>
-        <table class="cart-table" id="cart-table">
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Size</th>
-              <th>Price</th>
-              <th>Qty</th>
-              <th>Total</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-        <button class="btn-continue" id="btn-continue">Continue Shopping</button>
-      </div>
-
-      <div class="cart-right">
-        <h2>Order Summary</h2>
-        <div class="cart-summary" id="cart-summary"></div>
-
-        <button class="btn-checkout" id="btn-checkout">Proceed to Checkout</button>
-
-        <div class="checkout-form" id="checkout-form">
-          <h3>Checkout Information</h3>
-          <label>Name:</label><input type="text" id="customer-name" placeholder="Full name" required>
-          <p id="error-name" class="error-msg">Vui lòng nhập tên đầy đủ.</p>
-          
-          <label>Email:</label><input type="email" id="customer-email" placeholder="Email" required>
-          <p id="error-email" class="error-msg">Vui lòng nhập Email hợp lệ.</p>
-          
-          <label>Phone:</label><input type="text" id="customer-phone" placeholder="Phone number" required>
-          <p id="error-phone" class="error-msg">Vui lòng nhập số điện thoại.</p>
-          
-          <label>Address:</label><textarea id="customer-address" placeholder="Shipping address" rows="3" required></textarea>
-          <p id="error-address" class="error-msg">Vui lòng nhập địa chỉ giao hàng.</p>
-          
-          <label>Note:</label><textarea id="customer-note" placeholder="Additional notes" rows="2"></textarea>
-          <label>Payment Method:</label>
-          <input type="text" value="Pay on Delivery" readonly style="background:#eee; cursor:not-allowed; margin-bottom:10px;">
-          <button class="btn-submit-order" id="btn-submit-order">Submit Order</button>
-          <p id="error-cart" class="error-msg" style="text-align:center; font-size:16px; margin-top:15px;">Giỏ hàng của bạn đang trống.</p>
-        </div>
-      </div>
+<div class="container cart-container">
+  <div class="cart-left">
+    <h2>Your Cart Items</h2> 
+    <table class="cart-table" id="cart-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Size</th>
+          <th>Price</th>
+          <th>Qty</th>
+          <th>Total</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="cart-actions">
+        <button class="btn-continue" id="btn-continue">← Continue Shopping</button>
     </div>
+  </div>
+
+  <div class="cart-right">
+    <h2>Order Summary</h2>
+    <div class="cart-summary" id="cart-summary"></div>
+
+    <button class="btn-checkout" id="btn-checkout">Proceed to Checkout →</button>
+
+    <div class="checkout-form" id="checkout-form">
+      <h3>Shipping & Payment</h3>
+      <label>Name:</label><input type="text" id="customer-name" placeholder="Full name (Required)" required>
+      <label>Email:</label><input type="email" id="customer-email" placeholder="Email (Required)" required>
+      <label>Phone:</label><input type="text" id="customer-phone" placeholder="Phone number (Required)" required>
+      <label>Address:</label><textarea id="customer-address" placeholder="Shipping address (Required)" rows="3" required></textarea>
+      <label>Note:</label><textarea id="customer-note" placeholder="Additional notes (optional)" rows="2"></textarea>
+      <label>Payment Method:</label>
+      <input type="text" value="Pay on Delivery (COD)" readonly style="background:#eee; cursor:not-allowed; margin-bottom:10px;">
+      <button class="btn-submit-order" id="btn-submit-order">Submit Order</button> 
+    </div>
+  </div>
 </div>
+
 <div class="popup-confirm" id="popup-confirm">
-  <div class="popup-content">
-    <p>Are you sure you want to remove this item?</p>
-    <button class="btn-cancel" id="btn-cancel">Cancel</button>
-    <button class="btn-confirm" id="btn-confirm">Remove</button>
-  </div>
+  <div class="popup-content">
+    <p style="font-size: 20px; font-weight: 700;">CONFIRM REMOVAL</p>
+    <p style="margin-top: 10px;">Are you sure you want to remove this item from your cart?</p>
+    <button class="btn-cancel" id="btn-cancel">Cancel</button>
+    <button class="btn-confirm" id="btn-confirm">Remove Item</button>
+  </div>
 </div>
 
 <div class="popup-complete" id="popup-complete">
-  <div class="popup-content">
-    <h3>Thank you for your order!</h3>
-    <p>Your order has been placed successfully.</p>
-    <p id="order-total"></p> <button id="btn-close-complete">Close</button>
-  </div>
+  <div class="popup-content">
+    <h3 style="color: #000; font-size: 32px; margin-bottom: 10px;">✅ ORDER PLACED!</h3>
+    <p>Your order has been placed successfully and is being processed.</p>
+    <div id="order-total"></div>
+    <button id="btn-close-complete">Close</button>
+  </div>
 </div>
 
 <footer>
-  <div class="container footer-content">
-    <p>© 2025 STYLE HUB. All rights reserved.</p>
-    <p>Contact: info@stylehub.com</p>
-    <p style="font-size: 10px; opacity: 0.6;">(Footer đã được fix bằng Flexbox)</p>
-  </div>
+  <div class="container footer-content">
+    <p>© 2025 STYLE HUB. All rights reserved.</p>
+    <p>Contact: info@stylehub.com</p>
+  </div>
 </footer>
 
 <script>
 // Kiểm tra và sử dụng formatVND, updateCartCount từ main.js
-// Nếu main.js chưa load kịp, định nghĩa hàm cơ bản để tránh lỗi
 if (typeof formatVND === 'undefined') {
-    function formatVND(n){ return n.toLocaleString('vi-VN')+'₫'; }
+    function formatVND(n){ return n.toLocaleString('vi-VN')+'₫'; }
 }
 if (typeof updateCartCount === 'undefined') {
-    function updateCartCount(){ 
-        const cart = JSON.parse(localStorage.getItem('cart')||'[]');
-        const total = cart.reduce((a,b)=>a+(b.qty||1),0);
-        const el = document.getElementById('cart-count');
-        if(el) el.textContent = total; 
-    }
+    function updateCartCount(){ 
+        const cart = JSON.parse(localStorage.getItem('cart')||'[]');
+        const total = cart.reduce((a,b)=>a+(b.qty||1),0);
+        const el = document.getElementById('cart-count');
+        if(el) el.textContent = total; 
+    }
 }
 
 let cart = [];
@@ -119,7 +276,6 @@ try{ cart = JSON.parse(localStorage.getItem('cart')||'[]'); } catch(e){ cart=[];
 
 const cartTableBody = document.querySelector('#cart-table tbody');
 const cartSummary = document.getElementById('cart-summary');
-const cartCountEl = document.getElementById('cart-count');
 const checkoutForm = document.getElementById('checkout-form');
 const popupComplete = document.getElementById('popup-complete');
 const orderTotalEl = document.getElementById('order-total');
@@ -129,235 +285,158 @@ updateCartCount();
 let removeIndex = null;
 
 function renderCart(){
-  cartTableBody.innerHTML = '';
-  if(cart.length===0){ 
-    cartTableBody.innerHTML='<tr><td colspan="6">Your cart is empty</td></tr>'; 
-    cartSummary.innerHTML=''; 
-    // Nếu giỏ hàng trống, ẩn form checkout
-    checkoutForm.style.display = 'none';
-    return; 
-  }
+  cartTableBody.innerHTML = '';
+  if(cart.length===0){ 
+    cartTableBody.innerHTML='<tr><td colspan="6" style="padding: 40px; font-style: italic; color: #555;">Your cart is currently empty.</td></tr>'; 
+    cartSummary.innerHTML=''; 
+    document.getElementById('btn-checkout').style.display = 'none';
+    return; 
+  }
+  document.getElementById('btn-checkout').style.display = 'block';
 
-  let subtotal=0;
-  const shipping=50000;
-  const discountRate=0.1;
+  let subtotal=0;
+  const shipping=50000;
+  const discountRate=0.1;
 
-  cart.forEach((item,index)=>{
-    const qty=item.qty||1;
-    const total=item.price*qty;
-    subtotal+=total;
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td><img src="${item.img||'img/placeholder.png'}" alt="${item.name}"><br>${item.name}</td>
-      <td>${item.size||'-'}</td>
-      <td>${formatVND(item.price)}</td>
-      <td><input type="number" min="1" value="${qty}" class="qty-input" data-index="${index}"></td>
-      <td>${formatVND(total)}</td>
-      <td><button class="btn-remove" data-index="${index}">Remove</button></td>
-    `;
-    cartTableBody.appendChild(tr);
-  });
+  cart.forEach((item,index)=>{
+    const qty=item.qty||1;
+    const total=item.price*qty;
+    subtotal+=total;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><img src="${item.img||'img/placeholder.png'}" alt="${item.name}"><br><span style="font-weight: 500;">${item.name}</span></td>
+      <td>${item.size||'-'}</td>
+      <td>${formatVND(item.price)}</td>
+      <td><input type="number" min="1" value="${qty}" class="qty-input" data-index="${index}"></td>
+      <td style="font-weight: 700; color: #000;">${formatVND(total)}</td>
+      <td><button class="btn-remove" data-index="${index}">Remove</button></td>
+    `;
+    cartTableBody.appendChild(tr);
+  });
 
-  const discount=subtotal*discountRate;
-  const totalPay=subtotal-discount+shipping;
+  const discount=subtotal*discountRate;
+  const totalPay=subtotal-discount+shipping;
 
-  cartSummary.innerHTML=`
-    <div>Subtotal: ${formatVND(subtotal)}</div>
-    <div>Black Friday Discount: -${formatVND(discount)}</div>
-    <div>Shipping: ${formatVND(shipping)}</div>
-    <div class="total">Total: ${formatVND(totalPay)}</div>
-  `;
+  cartSummary.innerHTML=`
+    <div><span>Subtotal (Items):</span> <span>${formatVND(subtotal)}</span></div>
+    <div style="color: #FF4C4C;"><span>Black Friday Discount (10%):</span> <span>-${formatVND(discount)}</span></div>
+    <div><span>Shipping Fee:</span> <span>${formatVND(shipping)}</span></div>
+    <div class="total"><span>Grand Total:</span> <span class="total-amount">${formatVND(totalPay)}</span></div>
+  `;
 
-  document.querySelectorAll('.qty-input').forEach(input=>{
-    input.addEventListener('change', e=>{
-      let val=parseInt(e.target.value); if(val<1) val=1;
-      const idx=e.target.dataset.index;
-      cart[idx].qty=val;
-      localStorage.setItem('cart',JSON.stringify(cart));
-      renderCart(); updateCartCount();
-    });
-  });
+  document.querySelectorAll('.qty-input').forEach(input=>{
+    input.addEventListener('change', e=>{
+      let val=parseInt(e.target.value); if(val<1 || isNaN(val)) val=1; 
+      const idx=e.target.dataset.index;
+      cart[idx].qty=val;
+      localStorage.setItem('cart',JSON.stringify(cart));
+      renderCart(); updateCartCount();
+    });
+  });
 
-  document.querySelectorAll('.btn-remove').forEach(btn=>{
-    btn.addEventListener('click', e=>{
-      removeIndex=e.target.dataset.index;
-      document.getElementById('popup-confirm').style.display='flex';
-    });
-  });
+  document.querySelectorAll('.btn-remove').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      removeIndex=e.target.dataset.index;
+      document.getElementById('popup-confirm').style.display='flex';
+    });
+  });
 }
 
 document.getElementById('btn-cancel').addEventListener('click',()=>{ document.getElementById('popup-confirm').style.display='none'; removeIndex=null; });
 document.getElementById('btn-confirm').addEventListener('click',()=>{
-  if(removeIndex!==null){ 
-    cart.splice(removeIndex,1); 
-    localStorage.setItem('cart',JSON.stringify(cart)); 
-    renderCart(); 
-    updateCartCount(); 
-    removeIndex=null; 
-    document.getElementById('popup-confirm').style.display='none'; 
-  }
+  if(removeIndex!==null){ 
+    cart.splice(removeIndex,1); 
+    localStorage.setItem('cart',JSON.stringify(cart)); 
+    renderCart(); 
+    updateCartCount(); 
+    removeIndex=null; 
+    document.getElementById('popup-confirm').style.display='none'; 
+  }
 });
 
 document.getElementById('btn-continue').addEventListener('click',()=>{ location.href='products.html'; });
-document.getElementById('btn-checkout').addEventListener('click',()=>{ 
-    // Khi nhấn Checkout, đảm bảo giỏ hàng không trống
-    if (cart.length > 0) {
-        checkoutForm.style.display='block'; 
-        checkoutForm.scrollIntoView({behavior:'smooth'});
-    } else {
-        document.getElementById('error-cart').style.display = 'block';
-        document.querySelector('.cart-container').scrollIntoView({behavior:'smooth'});
-    }
-});
+document.getElementById('btn-checkout').addEventListener('click',()=>{ checkoutForm.style.display='block'; checkoutForm.scrollIntoView({behavior:'smooth'}); });
 
-
-// ======================================================
-// HÀM VALIDATION
-// ======================================================
-function validateForm(name, email, phone, address) {
-  let isValid = true;
-
-  // Hàm tiện ích để hiển thị lỗi
-  const displayError = (id, message = null) => {
-    const errorEl = document.getElementById(`error-${id}`);
-    const inputEl = document.getElementById(`customer-${id}`);
-    if (message) {
-      errorEl.textContent = message;
-      errorEl.style.display = 'block';
-      inputEl.classList.add('error');
-      // Thiết lập isValid thành false nếu có lỗi
-      isValid = false; 
-    } else {
-      errorEl.style.display = 'none';
-      inputEl.classList.remove('error');
-    }
-  };
-  
-  // Ẩn tất cả lỗi trước khi kiểm tra
-  document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
-  document.querySelectorAll('.checkout-form input, .checkout-form textarea').forEach(el => el.classList.remove('error'));
-
-  // Kiểm tra Giỏ hàng
-  if (cart.length === 0) {
-    document.getElementById('error-cart').style.display = 'block';
-    return false;
-  }
-
-  // 1. Kiểm tra Tên
-  if (!name) {
-    displayError('name', 'Vui lòng nhập tên đầy đủ.');
-  } else {
-    displayError('name');
-  }
-
-  // 2. Kiểm tra Email
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!email) {
-    displayError('email', 'Vui lòng nhập địa chỉ Email.');
-  } else if (!emailRegex.test(email)) {
-    displayError('email', 'Email không hợp lệ.');
-  } else {
-    displayError('email');
-  }
-
-  // 3. Kiểm tra Số điện thoại
-  if (!phone) {
-    displayError('phone', 'Vui lòng nhập số điện thoại.');
-  } else {
-    displayError('phone');
-  }
-
-  // 4. Kiểm tra Địa chỉ
-  if (!address) {
-    displayError('address', 'Vui lòng nhập địa chỉ giao hàng.');
-  } else {
-    displayError('address');
-  }
-
-  return isValid;
-}
-// ======================================================
-// HẾT HÀM VALIDATION
-// ======================================================
-
-
-// ===== LOGIC ĐẶT HÀNG CẬP NHẬT (Gọi Validation trước khi gửi API) =====
+// ===== LOGIC ĐẶT HÀNG CẬP NHẬT (Gửi dữ liệu chi tiết lên API) =====
 document.getElementById('btn-submit-order').addEventListener('click', async () => {
-  const name = document.getElementById('customer-name').value.trim();
-  const email = document.getElementById('customer-email').value.trim();
-  const phone = document.getElementById('customer-phone').value.trim();
-  const address = document.getElementById('customer-address').value.trim();
-  const note = document.getElementById('customer-note').value.trim();
+  const name = document.getElementById('customer-name').value.trim();
+  const email = document.getElementById('customer-email').value.trim();
+  const phone = document.getElementById('customer-phone').value.trim();
+  const address = document.getElementById('customer-address').value.trim();
+  const note = document.getElementById('customer-note').value.trim();
 
-  // ********** BƯỚC 1: THỰC HIỆN VALIDATION **********
-  const formIsValid = validateForm(name, email, phone, address);
-  
-  if (!formIsValid) { 
-    // Nếu Validation thất bại, cuộn lên đầu form để người dùng thấy lỗi
-    document.getElementById('checkout-form').scrollIntoView({behavior:'smooth', block:'start'});
-    return; 
-  }
-  // *************************************************
+  // 1. Kiểm tra thông tin
+  if (!name || !email || !phone || !address) { 
+    alert('⚠️ Please fill out all required fields (Name, Email, Phone, Address).'); 
+    return; 
+  }
+  
+  if (cart.length === 0) {
+    alert('Your cart is empty.');
+    return;
+  }
 
-  // 2. TÍNH TOÁN TỔNG TIỀN (Không đổi)
-  let subtotal = 0; 
-  cart.forEach(item => { subtotal += item.price * (item.qty || 1); });
-  const shipping = 50000;
-  const discount = subtotal * 0.1;
-  const total = subtotal - discount + shipping;
+  // 2. TÍNH TOÁN TỔNG TIỀN
+  let subtotal = 0; 
+  cart.forEach(item => { subtotal += item.price * (item.qty || 1); });
+  const shipping = 50000;
+  const discount = subtotal * 0.1;
+  const total = subtotal - discount + shipping;
 
-  // 3. TẠO OBJECT ĐƠN HÀNG CHI TIẾT (Không đổi)
-  const orderDetails = {
-    customer: { name, email, phone, address, note },
-    items: cart.map(item => ({ 
-      id: item.id, 
-      name: item.name, 
-      size: item.size, 
-      qty: item.qty || 1, 
-      price: item.price,
-      subtotal: item.price * (item.qty || 1)
-    })),
-    summary: { 
-      subtotal: subtotal, 
-      discount: discount, 
-      shipping: shipping, 
-      total: total 
-    },
-    orderDate: new Date().toISOString()
-  };
+  // 3. TẠO OBJECT ĐƠN HÀNG CHI TIẾT
+  const orderDetails = {
+    customer: { name, email, phone, address, note },
+    items: cart.map(item => ({ 
+      id: item.id, 
+      name: item.name, 
+      size: item.size, 
+      qty: item.qty || 1, 
+      price: item.price,
+      subtotal: item.price * (item.qty || 1)
+    })),
+    summary: { 
+      subtotal: subtotal, 
+      discount: discount, 
+      shipping: shipping, 
+      total: total 
+    },
+    orderDate: new Date().toISOString()
+  };
 
-  // 4. GỌI API GỬI ĐƠN HÀNG (Sử dụng API Server đã fix)
-  try {
-      const response = await fetch('/api/order', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(orderDetails)
-      });
-      const result = await response.json();
-      
-      if (result.success) {
-          // HIỂN THỊ THÔNG TIN CHI TIẾT ĐÃ ĐẶT LÊN POPUP
-          orderTotalEl.innerHTML = `
-            <p>Mã đơn hàng: <b>#${result.orderId}</b></p>
-            <p>Khách hàng: <b>${name}</b></p>
-            <p>Giao đến: <b>${address}</b></p>
-            <p style="font-size: 24px; color: #000; margin-top: 10px;">Tổng tiền: <b>${formatVND(total)}</b></p>
-          `;
-          popupComplete.style.display = 'flex';
+  // 4. GỌI API GỬI ĐƠN HÀNG
+  try {
+      const response = await fetch('/api/order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderDetails)
+      });
+      const result = await response.json();
+      
+      if (result.success) {
+          // HIỂN THỊ THÔNG TIN CHI TIẾT ĐÃ ĐẶT LÊN POPUP
+          orderTotalEl.innerHTML = `
+            <p style="font-size: 18px; font-weight: 700;">ORDER ID: <b style="color: #FFD700;">#${result.orderId}</b></p>
+            <p>Customer: <b>${name}</b></p>
+            <p>Shipping to: <b>${address}</b></p>
+            <p class="total-amount">${formatVND(total)}</p>
+          `;
+          popupComplete.style.display = 'flex';
 
-          // DỌN DẸP GIỎ HÀNG
-          cart = [];
-          localStorage.setItem('cart', JSON.stringify(cart));
-          renderCart();
-          updateCartCount();
-      } else {
-          alert('Lỗi đặt hàng: ' + result.message);
-      }
+          // DỌN DẸP GIỎ HÀNG
+          cart = [];
+          localStorage.setItem('cart', JSON.stringify(cart));
+          renderCart();
+          updateCartCount();
+          // Ẩn form checkout
+          checkoutForm.style.display = 'none';
+      } else {
+          alert('Order error: ' + result.message);
+      }
 
-  } catch (e) {
-      alert('Lỗi kết nối Server. Vui lòng thử lại sau.');
-      console.error(e);
-  }
+  } catch (e) {
+      alert('Server connection error. Please try again later.');
+      console.error(e);
+  }
 });
 
 document.getElementById('btn-close-complete').addEventListener('click',()=>{ popupComplete.style.display='none'; });

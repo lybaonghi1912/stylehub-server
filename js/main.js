@@ -1,6 +1,6 @@
 // js/main.js
 
-// ĐỊA CHỈ SERVER (Đây là cái server bạn đang chạy đó)
+// ĐỊA CHỈ SERVER (API bạn đang chạy)
 const API_URL = "/api";
 
 // 1. Hàm định dạng tiền tệ (700000 -> 700.000₫)
@@ -12,6 +12,7 @@ function formatVND(n) {
 async function fetchProducts() {
     try {
         const response = await fetch(`${API_URL}/products`);
+        if (!response.ok) throw new Error("Server trả về lỗi");
         const data = await response.json();
         return data;
     } catch (error) {
@@ -38,29 +39,38 @@ function renderGrid(containerId, items) {
                 <p class="price">${formatVND(p.price)}</p>
                 <p class="sizes">Sizes: ${p.sizes.join(', ')}</p>
             </a>
+            <button class="btn-add-cart" data-id="${p.id}">Add to Cart</button>
         </div>
     `).join('');
+
+    // Thêm sự kiện add to cart
+    container.querySelectorAll('.btn-add-cart').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const product = items.find(x => x.id == btn.dataset.id);
+            addToCart(product);
+        });
+    });
 }
 
-// 4. HÀM CHẠY CHÍNH
-async function initApp() {
-    // Gọi server lấy dữ liệu
-    const products = await fetchProducts();
+// 4. Hàm thêm sản phẩm vào giỏ hàng
+function addToCart(product) {
+    if (!product) return;
+    let cart = [];
+    try { cart = JSON.parse(localStorage.getItem('cart') || '[]'); } catch(e){}
 
-    // Nếu ở trang chủ -> Hiện 4 sản phẩm
-    if (document.getElementById('featured-grid')) {
-        renderGrid('featured-grid', products.slice(0, 4));
+    const existingIndex = cart.findIndex(item => item.id === product.id && item.size === (product.size || 'M'));
+    if (existingIndex >= 0) {
+        cart[existingIndex].qty = (cart[existingIndex].qty || 1) + 1;
+    } else {
+        cart.push({...product, qty: 1, size: product.sizes[0]});
     }
 
-    // Nếu ở trang Products -> Hiện hết
-    if (document.getElementById('product-list-container')) {
-        renderGrid('product-list-container', products);
-    }
-
+    localStorage.setItem('cart', JSON.stringify(cart));
     updateCartCount();
+    alert(`Đã thêm "${product.name}" vào giỏ hàng.`);
 }
 
-// 5. Hàm đếm giỏ hàng
+// 5. Hàm đếm giỏ hàng và cập nhật số lượng
 function updateCartCount() {
     let cart = [];
     try { cart = JSON.parse(localStorage.getItem('cart') || '[]'); } catch (e) {}
@@ -69,5 +79,23 @@ function updateCartCount() {
     if (el) el.textContent = total;
 }
 
-// Kích hoạt khi web load xong
+// 6. Hàm khởi tạo app
+async function initApp() {
+    const products = await fetchProducts();
+
+    // Trang chủ: Hiện 4 sản phẩm nổi bật
+    if (document.getElementById('featured-grid')) {
+        renderGrid('featured-grid', products.slice(0, 4));
+    }
+
+    // Trang products: Hiện tất cả
+    if (document.getElementById('product-list-container')) {
+        renderGrid('product-list-container', products);
+    }
+
+    // Cập nhật số lượng giỏ hàng
+    updateCartCount();
+}
+
+// 7. Kích hoạt khi web load xong
 document.addEventListener("DOMContentLoaded", initApp);

@@ -5,72 +5,305 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>STYLE HUB - Premium Men T-Shirts & Fashion | Black Friday Sale</title>
 
-<meta name="description" content="STYLE HUB: Cửa hàng thời trang nam cao cấp, chuyên cung cấp áo thun, áo khoác đơn giản và thanh lịch. Giảm giá lớn Black Friday!">
-<meta name="keywords" content="thời trang nam, áo thun cao cấp, áo khoác nam, STYLE HUB, Black Friday, quần áo đơn giản">
-<meta name="author" content="STYLE HUB Team">
+<meta name="description" content="STYLE HUB: Thời trang nam cao cấp, đơn giản và tinh tế. Áo thun, áo khoác, hoodie – Giảm giá lớn Black Friday!">
+<meta name="keywords" content="thời trang nam, áo thun, áo khoác, áo phông, STYLE HUB, Black Friday, quần áo nam">
+<meta name="author" content="STYLE HUB">
 
 <link rel="stylesheet" href="css/style.css">
 <script defer src="js/main.js"></script>
+<style>
+/* ---------------------------------
+   GLOBAL INDEX STYLES
+   --------------------------------- */
+main.container { margin-top: 50px; }
+
+/* Hero Section - Sang trọng & Ấn tượng */
+.hero {
+  position: relative; 
+  text-align: center; 
+  margin-bottom: 100px; /* Tăng khoảng cách dưới */
+}
+.hero-img { 
+  width: 100%; 
+  max-height: 600px; /* Tăng mạnh chiều cao */
+  object-fit: cover; 
+  border-radius: 15px; /* Bo góc tinh tế */
+  filter: brightness(60%) contrast(110%); /* Tăng độ tương phản và tối hơn */
+  transition: transform 0.5s ease;
+}
+.hero:hover .hero-img {
+    transform: scale(1.01); /* Zoom nhẹ khi hover */
+}
+.hero-content {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  color: #fff; 
+  text-shadow: 0 4px 15px rgba(0,0,0,0.9); /* Bóng chữ sâu hơn */
+  max-width: 90%;
+  padding: 30px;
+}
+.sale-badge { 
+  display: inline-block; 
+  background: #FFD700; 
+  color: #000; 
+  padding: 10px 25px; /* Tăng padding */
+  border-radius: 50px; 
+  font-weight: 900; 
+  margin-bottom: 20px; 
+  letter-spacing: 2px; /* Tăng khoảng cách chữ */
+  font-size: 1.1em;
+  transition: all 0.3s;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+.hero-title { 
+  font-size: 64px; /* Rất lớn, tạo ấn tượng */
+  margin-bottom: 15px; 
+  line-height: 1.1; 
+  font-weight: 900; 
+  letter-spacing: -1px;
+}
+.hero-sub { 
+  font-size: 26px; 
+  margin-bottom: 40px; 
+  font-weight: 300;
+  opacity: 0.9;
+}
+.hero-btn { 
+  background: #FFD700; 
+  color: #000; 
+  padding: 18px 45px; /* Nút rất lớn */
+  font-size: 20px; 
+  border-radius: 50px; /* Bo tròn hoàn toàn */
+  text-decoration: none; 
+  font-weight: bold; 
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4); 
+}
+.hero-btn:hover { 
+  background: #000; /* THAY ĐỔI: Đổi màu nền sang đen khi hover */
+  color: #FFD700; /* Chữ vàng kim */
+  transform: translateY(-3px) scale(1.02); 
+  box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3); 
+  border: 2px solid #FFD700; /* Viền vàng */
+}
+
+/* Featured Products Section */
+.featured-products h2 { 
+    text-align: center; 
+    font-size: 42px; /* Tiêu đề lớn */
+    margin-bottom: 60px; 
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 5px; /* Khoảng cách chữ rộng */
+    position: relative;
+    padding-bottom: 10px;
+}
+.featured-products h2::after { /* Đường gạch chân tinh tế */
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: #FFD700;
+}
+.featured-products .product-grid { 
+  gap: 40px; /* Tăng khoảng cách */
+  padding-bottom: 50px;
+  justify-items: center; 
+}
+.featured-products .product-card { 
+  border-radius: 15px; 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+  padding: 0; 
+  transition: all 0.4s ease;
+  overflow: hidden;
+}
+.featured-products .product-card:hover {
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    transform: translateY(-5px);
+}
+.featured-products .product-card img { 
+  height: 300px; /* Tăng chiều cao ảnh */
+  object-fit: cover; 
+  border-radius: 15px 15px 0 0; 
+  transition: all 0.5s ease;
+}
+.featured-products .product-card:hover img {
+    filter: brightness(1.05);
+}
+.featured-products .product-card h4 { 
+  margin: 20px 10px 5px; 
+  font-size: 20px; 
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.featured-products .product-card .price { 
+  font-weight: 900; 
+  color: #FFD700; /* Giá nổi bật */
+  margin-bottom: 15px; 
+  font-size: 22px; 
+}
+.featured-products .product-card .btn-add-cart { 
+  display: block; 
+  width: 85%;
+  margin: 0 auto 20px auto; 
+  padding: 12px; 
+  background: #000; 
+  color: #FFD700; 
+  border-radius: 8px; 
+  transition: 0.3s;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+.featured-products .product-card .btn-add-cart:hover { background: #333; }
+
+/* Features Section */
+.features {
+  padding: 60px 0;
+  margin-top: 50px;
+  background: #fcfcfc; /* Nền trắng ngà */
+  border-top: 1px solid #eee;
+}
+.features-grid { 
+  gap: 50px;
+  margin: 0 auto;
+}
+.feature { 
+  padding: 40px 20px; /* Tăng padding */
+  background: #fff; 
+  border-radius: 15px; 
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+  border: 1px solid #f0f0f0;
+}
+.feature:hover { 
+  transform: translateY(-8px); /* Nhảy cao hơn */
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15); 
+  background: #fff;
+}
+.feature .icon { 
+    font-size: 40px; /* Icon lớn hơn */
+    color: #FFD700;
+    margin-bottom: 15px;
+    display: block;
+    animation: bounceIn 1s;
+}
+.feature h4 { margin-bottom: 10px; font-size: 22px; font-weight: 800; text-transform: uppercase; }
+.feature p { font-size: 16px; color: #555; line-height: 1.6; }
+
+/* Responsive */
+@media(max-width:992px){
+  .hero-title { font-size: 48px; }
+  .featured-products h2 { font-size: 32px; letter-spacing: 3px; }
+}
+@media(max-width:768px){
+  .hero-title { font-size: 36px; }
+  .hero-sub { font-size: 20px; }
+  .hero-img { max-height: 450px; }
+  .featured-products h2 { font-size: 28px; letter-spacing: 2px; margin-bottom: 40px; }
+}
+</style>
 </head>
 <body>
+
 <header>
-  <div class="container header-flex">
-    <h1 class="logo">STYLE HUB</h1>
-    <nav>
-      <ul class="menu">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="products.html">Products</a></li>
-        <li><a href="cart.html">Cart <span id="cart-count">0</span></a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </nav>
-  </div>
+  <div class="container header-flex">
+    <h1 class="logo">STYLE HUB</h1>
+    <nav>
+      <ul class="menu">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="cart.html">Cart <span id="cart-count">0</span></a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
 </header>
 
-<div class="main-content-wrap">
+<main class="container">
+  <section class="hero">
+    <img src="img/banner.png" alt="STYLE HUB Banner" class="hero-img">
+    <div class="hero-content">
+      <span class="sale-badge">🔥 BLACK FRIDAY EXCLUSIVE DROP 🔥</span>
+      <h1 class="hero-title">Elevated Essentials. Minimalist Design.</h1>
+      <p class="hero-sub">Discover the premium collection crafted for discerning style.</p>
+      <a href="products.html" class="btn hero-btn">EXPLORE THE COLLECTION</a>
+    </div>
+  </section>
 
-    <section class="hero">
-      <img src="img/banner.png" alt="Hero Banner" class="hero-img">
-      <div class="hero-content">
-        <span class="sale-badge">BLACK FRIDAY</span>
-        <h1>Premium Men T-Shirts – Simple & Elegant</h1>
-        <a href="products.html" class="btn">Shop Now</a>
-      </div>
-    </section>
+  <section class="featured-products">
+    <h2>Featured Products</h2>
+    <div class="product-grid" id="featured-grid">
+      <p style="text-align:center; width:100%;">Loading products...</p>
+    </div>
+  </section>
+</main>
 
-    <section class="featured-products">
-      <div class="container">
-        <h2>Featured Products</h2>
-        <div class="product-grid" id="featured-grid">
-            <p style="text-align:center; width:100%;">Loading products...</p>
-        </div>
-      </div>
-    </section>
+<section class="features">
+  <div class="container features-grid">
+    <div class="feature">
+      <div class="icon">💎</div>
+      <h4>CURATED QUALITY</h4>
+      <p>Every piece is sourced and crafted with attention to premium materials and timeless durability.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🖤</div>
+      <h4>MINIMALIST AESTHETIC</h4>
+      <p>Simple lines and neutral palettes define our signature look, making styling effortlessly sophisticated.</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🚀</div>
+      <h4>WORLDWIDE EXPRESS</h4>
+      <p>Enjoy fast, tracked, and reliable shipping across the globe, delivered right to your door.</p>
+    </div>
+  </div>
+</section>
 
-    <section class="features">
-      <div class="container features-grid">
-        <div class="feature">
-          <h4>Free Returns</h4>
-          <p>30-day hassle-free returns</p>
-        </div>
-        <div class="feature">
-          <h4>Premium Material</h4>
-          <p>High-quality, breathable fabrics</p>
-        </div>
-        <div class="feature">
-          <h4>Fast Shipping</h4>
-          <p>Quick delivery nationwide</p>
-        </div>
-      </div>
-    </section>
-
-</div>
 <footer>
-  <div class="container footer-content">
-    <p>© 2025 STYLE HUB. All rights reserved.</p>
-    <p>Contact: info@stylehub.com</p>
-  </div>
+  <div class="container footer-content">
+    <p>© 2025 STYLE HUB. All rights reserved.</p>
+    <p>Hotline: 0901 234 567 — Email: info@stylehub.com</p>
+  </div>
 </footer>
+
+<script>
+// Load featured products (demo logic)
+document.addEventListener('DOMContentLoaded', ()=>{
+  const container = document.getElementById('featured-grid');
+  fetch('/api/products')
+    .then(res=>res.ok?res.json():Promise.reject())
+    .then(products=>{
+      if(!products.length) throw new Error('No products');
+      // Render 4 sản phẩm đầu tiên
+      container.innerHTML = products.slice(0, 4).map(p=>`
+        <div class="product-card">
+          <img src="${p.img}" alt="${p.name}" onerror="this.src='img/placeholder.png'">
+          <h4>${p.name}</h4>
+          <div class="price">${(p.price).toLocaleString('vi-VN')}₫</div>
+          <button class="btn-add-cart" data-id="${p.id}">Add to Cart</button>
+        </div>
+      `).join('');
+
+      // Add to cart event listeners (Tái tạo logic add to cart)
+      container.querySelectorAll('.btn-add-cart').forEach(btn => {
+          btn.addEventListener('click', () => {
+              const tempProduct = products.find(x => x.id == btn.dataset.id);
+              if (typeof window.addToCart === 'function') {
+                  window.addToCart(tempProduct);
+              } else {
+                  alert("Function addToCart not loaded yet.");
+              }
+          });
+      });
+    })
+    .catch(err=>{
+      console.error(err);
+      container.innerHTML = '<p style="text-align:center;width:100%;">Không thể tải sản phẩm.</p>';
+    });
+});
+</script>
 
 </body>
 </html>

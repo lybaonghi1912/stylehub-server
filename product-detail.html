@@ -1,19 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Product Detail – STYLE HUB</title>
-  <link rel="stylesheet" href="css/style.css" />
-  </head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Detail – STYLE HUB</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* Highlight menu current page */
+.menu li a.active {
+  color: #FFD700;
+  font-weight: bold;
+  border-bottom: 2px solid #FFD700;
+}
+
+/* Product Detail */
+.product-detail { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 60px; 
+  margin: 70px 0; 
+  justify-content: center; 
+  align-items: flex-start; 
+}
+.product-detail .img-gallery { 
+  flex: 1 1 450px; 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* Shadow sâu hơn */
+  border-radius: 12px;
+  overflow: hidden;
+}
+.product-detail .img-gallery img { 
+    width: 100%; 
+    object-fit: cover; 
+    border-radius: 0; 
+}
+.product-detail .info { flex: 1 1 450px; padding-top: 10px; }
+.product-detail .info h1 { 
+    font-size: 40px; /* Tiêu đề rất lớn */
+    margin-bottom: 10px; 
+    font-weight: 900;
+}
+.product-detail .info .sku { font-size: 15px; color: #777; margin-bottom: 25px; }
+.product-detail .info .price { 
+    font-size: 32px; 
+    font-weight: bold; 
+    color: #FFD700; 
+    margin-bottom: 30px; 
+    padding: 10px 0;
+    border-top: 1px dashed #eee;
+    border-bottom: 1px dashed #eee;
+}
+.product-detail .info .description { font-size: 18px; color: #333; margin-bottom: 35px; line-height: 1.7; }
+.product-detail .info .option { margin-bottom: 30px; }
+.product-detail .info .option label { margin-right: 15px; font-weight: bold; font-size: 18px; }
+.product-detail .info .option select { 
+    padding: 12px 18px; /* Tăng padding */
+    font-size: 17px; 
+    border-radius: 8px; 
+    border: 2px solid #ccc; /* Viền dày hơn */
+    transition: border-color 0.3s;
+}
+.product-detail .info .option select:focus {
+    border-color: #000;
+    outline: none;
+}
+.product-detail .info .btns { margin-top: 30px; display: flex; gap: 20px; flex-wrap: wrap; }
+.product-detail .info .btns button { 
+    padding: 16px 35px; /* Nút lớn */
+    font-size: 18px; 
+    border: none; 
+    border-radius: 50px; /* Bo tròn hoàn toàn */
+    cursor: pointer; 
+    transition: all 0.4s; 
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.product-detail .info .btn-add { background: #000; color: #FFD700; }
+.product-detail .info .btn-add:hover { 
+    background: #FFD700; 
+    color: #000; 
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4); 
+}
+.product-detail .info .btn-size { 
+    background: transparent; 
+    color: #000; 
+    border: 2px solid #000; /* Nút phụ viền đen */
+}
+.product-detail .info .btn-size:hover { 
+    background: #f0f0f0; 
+    transform: translateY(-2px); 
+}
+
+/* Popup size suggestion */
+.size-popup {
+  position: fixed; top:0; left:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.8); 
+  display: none; justify-content: center; align-items: center; padding: 20px; z-index: 999;
+}
+.size-popup .popup-content {
+  background: #fff; padding: 40px; border-radius: 12px; max-width: 450px; width: 100%; text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+.size-popup .popup-content h3 { font-size: 28px; margin-bottom: 15px; font-weight: 800; }
+.size-popup .popup-content input {
+  width: 90%; 
+  padding: 14px; 
+  margin: 10px 0; 
+  font-size: 17px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+.size-popup .popup-content button {
+  padding: 14px 25px; 
+  margin-top: 20px; 
+  font-size: 17px;
+  border: none; 
+  border-radius: 50px; 
+  cursor: pointer; 
+  background: #000; 
+  color: #FFD700; 
+  transition: 0.3s;
+  font-weight: 700;
+}
+.size-popup .popup-content button:hover { background: #333; }
+.size-popup .popup-content #suggested-size {
+    margin-top:30px;
+    font-size:22px;
+    font-weight:bold;
+    color: #000;
+    background: #FFD700;
+    padding: 15px;
+    border-radius: 8px;
+}
+#btn-close-popup { margin-top:25px; background: #555 !important; color: #fff !important; }
+
+/* Responsive */
+@media(max-width:768px){
+  .product-detail { flex-direction: column; align-items: center; gap: 40px; margin: 40px 0; }
+  .product-detail .info, .product-detail .img-gallery { flex: 1 1 100%; }
+  .product-detail .img-gallery { box-shadow: none; border-radius: 0; }
+  .product-detail .info h1 { font-size: 32px; }
+  .product-detail .info .btns button { padding: 12px 20px; font-size: 15px; }
+  .size-popup .popup-content h3 { font-size: 22px; }
+}
+</style>
+</head>
 <body>
+
 <header>
   <div class="container header-flex">
     <h1 class="logo">STYLE HUB</h1>
     <nav>
       <ul class="menu">
         <li><a href="index.html">Home</a></li>
-        <li><a href="products.html">Products</a></li>
+        <li><a href="products.html" class="active">Products</a></li>
         <li><a href="cart.html">Cart <span id="cart-count">0</span></a></li>
         <li><a href="contact.html">Contact</a></li>
       </ul>
@@ -21,21 +162,21 @@
   </div>
 </header>
 
-<div class="main-content-wrap">
-    <main class="container">
-      <div class="product-detail" id="product-detail">
-        <p style="text-align:center; padding: 50px;">Loading product details...</p>
-      </div>
-    </main>
-</div>
+<main class="container">
+  <div class="product-detail" id="product-detail">
+    <p style="text-align:center; padding: 50px;">Loading product details...</p>
+  </div>
+</main>
+
 <div class="size-popup" id="size-popup">
   <div class="popup-content">
-    <h3>Nhập chiều cao và cân nặng</h3>
-    <input type="number" id="input-height" placeholder="Chiều cao (cm)" />
-    <input type="number" id="input-weight" placeholder="Cân nặng (kg)" />
-    <button id="btn-calc-size">Gợi ý size</button>
-    <p id="suggested-size" style="margin-top:20px;font-size:18px;font-weight:bold;"></p>
-    <button id="btn-close-popup" style="margin-top:15px;">Đóng</button>
+    <h3>AI Size Advisor</h3>
+    <p style="margin-bottom: 20px; color: #555;">Enter your metrics for an accurate, personalized recommendation.</p>
+    <input type="number" id="input-height" placeholder="Height (cm)" />
+    <input type="number" id="input-weight" placeholder="Weight (kg)" />
+    <button id="btn-calc-size">Suggest Size</button>
+    <p id="suggested-size"></p>
+    <button id="btn-close-popup">Close</button>
   </div>
 </div>
 
@@ -47,6 +188,107 @@
 </footer>
 
 <script src="js/main.js"></script>
-<script src="js/productDetail.js"></script> 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Highlight menu
+  const menuLinks = document.querySelectorAll(".menu li a");
+  menuLinks.forEach(link => { if(link.href === window.location.href) link.classList.add("active"); });
+
+  // Lấy ID sản phẩm
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get('id');
+
+  const container = document.getElementById('product-detail');
+
+  fetch(`/api/products/${productId}`)
+    .then(res => res.ok ? res.json() : Promise.reject())
+    .then(prod => {
+      if(!prod) throw new Error('Not found');
+      const formatVND = typeof window.formatVND==='function'? window.formatVND : (n)=>n.toLocaleString('vi-VN')+'₫';
+      const sizesOptions = prod.sizes.map(sz=>`<option value="${sz}">${sz}</option>`).join('');
+      container.innerHTML = `
+        <div class="img-gallery">
+          <img src="${prod.img}" alt="${prod.name}" onerror="this.src='img/placeholder.png'">
+        </div>
+        <div class="info">
+          <h1 id="product-name">${prod.name}</h1>
+          <div class="sku">Product ID: ${prod.id} | Available Sizes: ${prod.sizes.join(', ')}</div>
+          <div class="price">${formatVND(prod.price)}</div>
+          <div class="description">Mô tả: ${prod.name} - Hàng chính hãng, chất lượng cao từ Style Hub. Thiết kế đơn giản, tinh tế, phù hợp với mọi phong cách.</div>
+          <div class="option">
+            <label>Select Size:</label>
+            <select id="select-size">${sizesOptions}</select>
+          </div>
+          <div class="btns">
+            <button class="btn-add" id="btn-add-cart">Add to Cart</button>
+            <button class="btn-size" id="btn-show-size">AI Size Advisor</button>
+          </div>
+        </div>
+      `;
+
+      // Add to cart
+      document.getElementById('btn-add-cart').addEventListener('click', () => {
+        const size = document.getElementById('select-size').value;
+        let cart = JSON.parse(localStorage.getItem('cart')||'[]');
+        const existing = cart.find(item=>item.id===prod.id && item.size===size);
+        if(existing) existing.qty=(existing.qty||1)+1;
+        else cart.push({id:prod.id,name:prod.name,price:prod.price,size:size,qty:1,img:prod.img});
+        localStorage.setItem('cart',JSON.stringify(cart));
+        if(typeof updateCartCount==='function') updateCartCount();
+        window.location.href='cart.html';
+      });
+
+      // Show popup
+      document.getElementById('btn-show-size').addEventListener('click', ()=>{
+        document.getElementById('size-popup').style.display='flex';
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      container.innerHTML = '<h2 style="text-align:center; margin-top:70px">⚠️ Connection error or product not found.</h2>';
+    });
+
+  // Popup logic
+  const popup = document.getElementById('size-popup');
+  const suggestedEl = document.getElementById('suggested-size');
+
+  document.getElementById('btn-close-popup').addEventListener('click', ()=>{
+    popup.style.display='none';
+    suggestedEl.textContent='';
+    document.getElementById('input-height').value='';
+    document.getElementById('input-weight').value='';
+  });
+
+  document.getElementById('btn-calc-size').addEventListener('click', ()=>{
+    const height=parseInt(document.getElementById('input-height').value);
+    const weight=parseInt(document.getElementById('input-weight').value);
+    if(isNaN(height)||isNaN(weight)||height<=0||weight<=0){
+      suggestedEl.textContent='⚠️ Please enter valid height and weight!';
+      suggestedEl.style.backgroundColor = '#FF4C4C';
+      suggestedEl.style.color = '#fff';
+      return;
+    }
+    const name = document.getElementById('product-name').textContent.toUpperCase();
+    let sizeChart = 'Jacket/Hoodie';
+    if(name.includes('TEE')||name.includes('POLO')||name.includes('SLEEVE')||name.includes('COLLAR')) sizeChart='Shirt/T-shirt';
+    let size='M';
+    if(sizeChart==='Shirt/T-shirt'){
+      if(height>=175 && weight>=75) size='L';
+      else if(height>=170 && weight>=65) size='M';
+      else if(height>=160 && weight>=50) size='S';
+      else size='S';
+    } else {
+      if(height>=175 && weight>=75) size='XL';
+      else if(height>=170 && weight>=65) size='L';
+      else if(height>=160 && weight>=50) size='M';
+      else size='S';
+    }
+    suggestedEl.textContent=`Recommended Size (${sizeChart}): Size ${size} is the best fit!`;
+    suggestedEl.style.backgroundColor = '#FFD700';
+    suggestedEl.style.color = '#000';
+  });
+});
+</script>
+
 </body>
 </html>

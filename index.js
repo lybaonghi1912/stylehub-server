@@ -45,39 +45,15 @@ app.get('/api/products/:id', (req, res) => {
   else res.status(404).json({ message: "Sản phẩm không tồn tại" });
 });
 
-// API: Đặt hàng (ĐÃ CẬP NHẬT để thêm Backend Validation)
+// API: Đặt hàng (ĐÃ CẬP NHẬT để nhận và trả về orderId)
 app.post('/api/order', (req, res) => {
   const orderData = req.body;
   
-  // ======================================================
-  // BẮT ĐẦU: BACKEND VALIDATION
-  // ======================================================
-  const customer = orderData.customer || {};
-  const items = orderData.items || [];
-
-  // 1. Kiểm tra thông tin khách hàng bắt buộc
-  if (!customer.name || !customer.email || !customer.phone || !customer.address) {
-    console.warn("Lỗi đặt hàng: Thiếu thông tin khách hàng bắt buộc.");
-    return res.status(400).json({ success: false, message: "Vui lòng cung cấp đầy đủ Tên, Email, Điện thoại và Địa chỉ." });
-  }
-
-  // 2. Kiểm tra giỏ hàng
-  if (items.length === 0) {
-    console.warn("Lỗi đặt hàng: Giỏ hàng trống.");
-    return res.status(400).json({ success: false, message: "Giỏ hàng không được để trống." });
-  }
-
-  // (Bạn có thể thêm logic kiểm tra giá trị email, phone format ở đây nếu cần)
-  
-  // ======================================================
-  // KẾT THÚC: VALIDATION -> XỬ LÝ ĐƠN HÀNG
-  // ======================================================
-
   // Ghi log đơn hàng chi tiết đã nhận
   console.log("-----------------------------------------");
-  console.log(`Đơn hàng mới từ: ${customer.name}`);
+  console.log(`Đơn hàng mới từ: ${orderData.customer.name}`);
   console.log(`Tổng cộng: ${orderData.summary.total.toLocaleString('vi-VN')}₫`); 
-  console.log(`Số lượng SP: ${items.length}`);
+  console.log(`Số lượng SP: ${orderData.items.length}`);
   console.log("Chi tiết đơn hàng đã được nhận tại Server.");
   console.log("-----------------------------------------");
   

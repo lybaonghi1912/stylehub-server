@@ -6,38 +6,141 @@
 <title>Products - STYLE HUB</title>
 <link rel="stylesheet" href="css/style.css">
 <script defer src="js/main.js"></script>
+<style>
+/* Highlight menu current page */
+.menu li a.active {
+  color: #FFD700;
+  font-weight: bold;
+  border-bottom: 2px solid #FFD700;
+}
+
+/* Section heading - Sang trọng hơn */
+.products-section h2 {
+  text-align: center;
+  font-size: 36px; 
+  margin: 70px 0 50px; /* Tăng margin */
+  color: #000;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 5px; /* Tăng khoảng cách chữ */
+  position: relative;
+  padding-bottom: 10px;
+}
+.products-section h2::after { /* Đường gạch chân vàng */
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: #FFD700;
+}
+
+/* Product Grid (Kế thừa từ các cải tiến) */
+.product-grid {
+    padding-bottom: 50px;
+    /* Cấu hình lại để tận dụng tối đa không gian màn hình lớn */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 30px; 
+}
+.product-card {
+    border: none; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
+    transition: all 0.3s ease;
+    padding: 0;
+    overflow: hidden;
+    height: auto;
+}
+.product-card:hover {
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    transform: translateY(-5px);
+}
+.product-card img {
+    height: 300px; /* Ảnh lớn hơn */
+    border-radius: 12px 12px 0 0;
+}
+.product-card h3 {
+    font-size: 19px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 15px 10px 5px;
+}
+.product-card .price {
+    font-size: 20px;
+    font-weight: 900;
+    color: #FFD700;
+    margin-bottom: 10px;
+}
+.product-card .sizes {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 15px;
+}
+.btn-add-cart { 
+    display: block;
+    width: 90%;
+    margin: 0 auto 15px auto;
+    padding: 10px;
+    background: #000;
+    color: #FFD700;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+.btn-add-cart:hover { background: #333; }
+
+/* Căn giữa thông báo tải */
+.products-section .product-grid {
+    justify-items: center;
+    padding-bottom: 50px;
+}
+</style>
 </head>
 <body>
+
 <header>
-  <div class="container header-flex">
-    <h1 class="logo">STYLE HUB</h1>
-    <nav>
-      <ul class="menu">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="products.html">Products</a></li>
-        <li><a href="cart.html">Cart <span id="cart-count">0</span></a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </nav>
-  </div>
+  <div class="container header-flex">
+    <h1 class="logo">STYLE HUB</h1>
+    <nav>
+      <ul class="menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html" class="active">Products</a></li>
+        <li><a href="cart.html">Cart <span id="cart-count">0</span></a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
 </header>
 
-<div class="main-content-wrap">
-    <section class="products-section">
-      <div class="container">
-        <h2>Our Black Friday Collection</h2>
-        <div class="product-grid" id="product-list-container">
-            <p style="text-align:center; width:100%;">Loading products...</p>
-        </div>
-      </div>
-    </section>
-</div>
+<section class="products-section">
+  <div class="container">
+    <h2>OUR COMPLETE COLLECTION</h2>
+    <div class="product-grid" id="product-list-container">
+      <p style="text-align:center; width:100%;">Loading products...</p>
+    </div>
+  </div>
+</section>
+
 <footer>
-  <div class="container footer-content">
-    <p>© 2025 STYLE HUB. All rights reserved.</p>
-    <p>Contact: info@stylehub.com</p>
-  </div>
+  <div class="container footer-content">
+    <p>© 2025 STYLE HUB. All rights reserved.</p>
+    <p>Contact: info@stylehub.com</p>
+  </div>
 </footer>
+
+<script>
+// Highlight menu active dynamically (optional)
+document.addEventListener("DOMContentLoaded", () => {
+  const menuLinks = document.querySelectorAll(".menu li a");
+  menuLinks.forEach(link => {
+    if (link.href === window.location.href) link.classList.add("active");
+  });
+});
+</script>
 
 </body>
 </html>
