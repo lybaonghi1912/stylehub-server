@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cart & Checkout – STYLE HUB</title>
 <link rel="stylesheet" href="css/style.css">
-<script defer src="js/main.js"></script> <style>
+<script defer src="js/main.js"></script> 
+<style>
 /* Body + background */
 body {
   background: linear-gradient(to right, #f7f7f7, #ffffff);
@@ -78,6 +79,18 @@ header nav ul li a:hover {color:#FFD700;}
 .checkout-form label { font-weight:bold; display:block; margin-top:10px; }
 .checkout-form input, .checkout-form textarea { width:100%; padding:10px; margin-top:5px; border-radius:6px; border:1px solid #ccc; font-size:14px; }
 
+/* Thêm CSS cho thông báo lỗi */
+.checkout-form .error-msg {
+  color: #FF4C4C; /* Màu đỏ */
+  font-size: 13px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  display: none; /* Mặc định ẩn */
+}
+.checkout-form input.error, .checkout-form textarea.error {
+  border: 1px solid #FF4C4C !important;
+}
+
 /* Footer */
 footer {background:#000; color:#fff; padding:20px 0; text-align:center; margin-top:50px;}
 footer p {margin-bottom:5px;}
@@ -146,13 +159,22 @@ footer p {margin-bottom:5px;}
     <div class="checkout-form" id="checkout-form">
       <h3>Checkout Information</h3>
       <label>Name:</label><input type="text" id="customer-name" placeholder="Full name" required>
+      <p id="error-name" class="error-msg">Vui lòng nhập tên đầy đủ.</p>
+      
       <label>Email:</label><input type="email" id="customer-email" placeholder="Email" required>
+      <p id="error-email" class="error-msg">Vui lòng nhập Email hợp lệ.</p>
+      
       <label>Phone:</label><input type="text" id="customer-phone" placeholder="Phone number" required>
+      <p id="error-phone" class="error-msg">Vui lòng nhập số điện thoại.</p>
+      
       <label>Address:</label><textarea id="customer-address" placeholder="Shipping address" rows="3" required></textarea>
+      <p id="error-address" class="error-msg">Vui lòng nhập địa chỉ giao hàng.</p>
+      
       <label>Note:</label><textarea id="customer-note" placeholder="Additional notes" rows="2"></textarea>
       <label>Payment Method:</label>
       <input type="text" value="Pay on Delivery" readonly style="background:#eee; cursor:not-allowed; margin-bottom:10px;">
       <button class="btn-submit-order" id="btn-submit-order">Submit Order</button>
+      <p id="error-cart" class="error-msg" style="text-align:center; font-size:16px; margin-top:15px;">Giỏ hàng của bạn đang trống.</p>
     </div>
   </div>
 </div>
@@ -198,10 +220,6 @@ if (typeof updateCartCount === 'undefined') {
 let cart = [];
 try{ cart = JSON.parse(localStorage.getItem('cart')||'[]'); } catch(e){ cart=[]; }
 
-// --- LOGIC ĐỒNG BỘ CŨ ĐÃ BỊ XÓA VÌ data.js KHÔNG CÒN TỒN TẠI ---
-// Nếu bạn muốn đồng bộ lại giá/ảnh, bạn cần gọi API Server tại đây
-// Nhưng hiện tại, chúng ta chỉ dựa vào dữ liệu đã lưu trong localStorage
-
 const cartTableBody = document.querySelector('#cart-table tbody');
 const cartSummary = document.getElementById('cart-summary');
 const cartCountEl = document.getElementById('cart-count');
@@ -218,6 +236,8 @@ function renderCart(){
   if(cart.length===0){ 
     cartTableBody.innerHTML='<tr><td colspan="6">Your cart is empty</td></tr>'; 
     cartSummary.innerHTML=''; 
+    // Nếu giỏ hàng trống, ẩn form checkout
+    checkoutForm.style.display = 'none';
     return; 
   }
 
@@ -282,9 +302,91 @@ document.getElementById('btn-confirm').addEventListener('click',()=>{
 });
 
 document.getElementById('btn-continue').addEventListener('click',()=>{ location.href='products.html'; });
-document.getElementById('btn-checkout').addEventListener('click',()=>{ checkoutForm.style.display='block'; checkoutForm.scrollIntoView({behavior:'smooth'}); });
+document.getElementById('btn-checkout').addEventListener('click',()=>{ 
+    // Khi nhấn Checkout, đảm bảo giỏ hàng không trống
+    if (cart.length > 0) {
+        checkoutForm.style.display='block'; 
+        checkoutForm.scrollIntoView({behavior:'smooth'});
+    } else {
+        document.getElementById('error-cart').style.display = 'block';
+        document.querySelector('.cart-container').scrollIntoView({behavior:'smooth'});
+    }
+});
 
-// ===== LOGIC ĐẶT HÀNG CẬP NHẬT (Gửi dữ liệu chi tiết lên API) =====
+
+// ======================================================
+// HÀM VALIDATION MỚI
+// ======================================================
+function validateForm(name, email, phone, address) {
+  let isValid = true;
+
+  // Hàm tiện ích để hiển thị lỗi
+  const displayError = (id, message = null) => {
+    const errorEl = document.getElementById(`error-${id}`);
+    const inputEl = document.getElementById(`customer-${id}`);
+    if (message) {
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+      inputEl.classList.add('error');
+      // Thiết lập isValid thành false nếu có lỗi
+      isValid = false; 
+    } else {
+      errorEl.style.display = 'none';
+      inputEl.classList.remove('error');
+    }
+  };
+  
+  // Ẩn tất cả lỗi trước khi kiểm tra
+  document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.checkout-form input, .checkout-form textarea').forEach(el => el.classList.remove('error'));
+
+  // Kiểm tra Giỏ hàng
+  if (cart.length === 0) {
+    // Không cần set isValid=false ở đây vì logic này nằm ngoài form inputs
+    document.getElementById('error-cart').style.display = 'block';
+    return false;
+  }
+
+  // 1. Kiểm tra Tên
+  if (!name) {
+    displayError('name', 'Vui lòng nhập tên đầy đủ.');
+  } else {
+    displayError('name');
+  }
+
+  // 2. Kiểm tra Email
+  // Regex kiểm tra định dạng email cơ bản
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email) {
+    displayError('email', 'Vui lòng nhập địa chỉ Email.');
+  } else if (!emailRegex.test(email)) {
+    displayError('email', 'Email không hợp lệ.');
+  } else {
+    displayError('email');
+  }
+
+  // 3. Kiểm tra Số điện thoại
+  if (!phone) {
+    displayError('phone', 'Vui lòng nhập số điện thoại.');
+  } else {
+    displayError('phone');
+  }
+
+  // 4. Kiểm tra Địa chỉ
+  if (!address) {
+    displayError('address', 'Vui lòng nhập địa chỉ giao hàng.');
+  } else {
+    displayError('address');
+  }
+
+  return isValid;
+}
+// ======================================================
+// HẾT HÀM VALIDATION
+// ======================================================
+
+
+// ===== LOGIC ĐẶT HÀNG CẬP NHẬT (Gọi Validation trước khi gửi API) =====
 document.getElementById('btn-submit-order').addEventListener('click', async () => {
   const name = document.getElementById('customer-name').value.trim();
   const email = document.getElementById('customer-email').value.trim();
@@ -292,25 +394,24 @@ document.getElementById('btn-submit-order').addEventListener('click', async () =
   const address = document.getElementById('customer-address').value.trim();
   const note = document.getElementById('customer-note').value.trim();
 
-  // 1. Kiểm tra thông tin
-  if (!name || !email || !phone || !address) { 
-    alert('Vui lòng điền đầy đủ thông tin bắt buộc.'); 
+  // ********** BƯỚC 1: THỰC HIỆN VALIDATION **********
+  const formIsValid = validateForm(name, email, phone, address);
+  
+  if (!formIsValid) { 
+    // Nếu Validation thất bại, cuộn lên đầu form để người dùng thấy lỗi
+    document.getElementById('checkout-form').scrollIntoView({behavior:'smooth', block:'start'});
     return; 
   }
-  
-  if (cart.length === 0) {
-    alert('Giỏ hàng của bạn đang trống.');
-    return;
-  }
+  // *************************************************
 
-  // 2. TÍNH TOÁN TỔNG TIỀN
+  // 2. TÍNH TOÁN TỔNG TIỀN (Không đổi)
   let subtotal = 0; 
   cart.forEach(item => { subtotal += item.price * (item.qty || 1); });
   const shipping = 50000;
   const discount = subtotal * 0.1;
   const total = subtotal - discount + shipping;
 
-  // 3. TẠO OBJECT ĐƠN HÀNG CHI TIẾT
+  // 3. TẠO OBJECT ĐƠN HÀNG CHI TIẾT (Không đổi)
   const orderDetails = {
     customer: { name, email, phone, address, note },
     items: cart.map(item => ({ 
@@ -330,7 +431,7 @@ document.getElementById('btn-submit-order').addEventListener('click', async () =
     orderDate: new Date().toISOString()
   };
 
-  // 4. GỌI API GỬI ĐƠN HÀNG
+  // 4. GỌI API GỬI ĐƠN HÀNG (Không đổi)
   try {
       const response = await fetch('/api/order', {
           method: 'POST',
