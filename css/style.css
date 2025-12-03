@@ -41,7 +41,7 @@ header nav ul li a:hover {color:#FFD700;}
 .feature p {font-size:14px; color:#555;}
 
 /* Footer */
-footer {background:#000; color:#fff; padding:20px 0; text-align:center; margin-top:50px;}
+footer {background:#000; color:#fff; padding:20px 0; text-align:center; margin-top:0;} /* Đã set margin-top về 0 để Flexbox quản lý */
 footer p {margin-bottom:5px; font-size:14px;}
 
 /* Product Detail Page */
@@ -109,7 +109,36 @@ footer p {margin-bottom:5px; font-size:14px;}
 
 /* Responsive */
 @media(max-width:768px){
-  .product-detail {flex-direction:column;}
-  .product-detail .info, .product-detail .img-gallery {flex:1 1 100%;}
-  .contact-section {flex-direction:column;}
+  .product-detail {flex-direction:column;}
+  .product-detail .info, .product-detail .img-gallery {flex:1 1 100%;}
+  .contact-section {flex-direction:column;}
+}
+
+/* ====================================================== */
+/* CẬP NHẬT MỚI: FIX FOOTER & VALIDATION ERROR */
+/* ====================================================== */
+
+/* FIX 1: STICKY FOOTER (Áp dụng cho mọi trang) */
+html, body {
+    height: 100%;
+}
+body {
+    display: flex;
+    flex-direction: column;
+}
+.main-content-wrap {
+    flex: 1 0 auto; 
+}
+
+
+/* FIX 2: VALIDATION ERROR (TỪ CART.HTML) */
+.checkout-form .error-msg {
+    color: #FF4C4C; /* Màu đỏ */
+    font-size: 13px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    display: none; /* Mặc định ẩn */
+}
+.checkout-form input.error, .checkout-form textarea.error {
+    border: 1px solid #FF4C4C !important;
 }

@@ -5,101 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product Detail – STYLE HUB</title>
   <link rel="stylesheet" href="css/style.css" />
-  <style>
-    /* CSS hiện tại của bạn */
-    .product-detail { display: flex; flex-wrap: wrap; gap: 40px; margin: 40px 0; }
-    .product-detail .img-gallery {
-      flex: 1 1 400px;
-    }
-    .product-detail .img-gallery img {
-      width: 100%;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-    .product-detail .info {
-      flex: 1 1 400px;
-    }
-    .info h1 {
-      font-size: 28px;
-      margin-bottom: 15px;
-    }
-    .info .price {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    .info .description {
-      font-size: 16px;
-      color: #333;
-      margin-bottom: 20px;
-      line-height: 1.5;
-    }
-    .info .option {
-      margin-bottom: 15px;
-    }
-    .info .option label {
-      margin-right: 10px;
-    }
-    .info .option select {
-      padding: 8px 12px;
-      font-size: 14px;
-    }
-    .info .btns {
-      margin-top: 20px;
-    }
-    .info .btns button {
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-right: 10px;
-    }
-    .info .btn-add {
-      background: #000;
-      color: #FFD700;
-    }
-    .info .btn-size {
-      background: #FFD700;
-      color: #000;
-    }
-    /* Popup size suggestion */
-    .size-popup {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.6);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-    .size-popup .popup-content {
-      background: #fff;
-      padding: 30px;
-      border-radius: 8px;
-      max-width: 400px;
-      width: 100%;
-      text-align: center;
-    }
-    .size-popup .popup-content input {
-      width: 80%;
-      padding: 8px 10px;
-      margin: 10px 0;
-      font-size: 14px;
-    }
-    .size-popup .popup-content button {
-      padding: 8px 16px;
-      margin-top: 10px;
-      font-size: 15px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      background: #000;
-      color: #FFD700;
-    }
-    /* CSS Responsive cần được đảm bảo trong file style.css */
-  </style>
-</head>
+  </head>
 <body>
 <header>
   <div class="container header-flex">
@@ -115,12 +21,13 @@
   </div>
 </header>
 
-<main class="container">
-  <div class="product-detail" id="product-detail">
-    <p style="text-align:center; padding: 50px;">Loading product details...</p>
-  </div>
-</main>
-
+<div class="main-content-wrap">
+    <main class="container">
+      <div class="product-detail" id="product-detail">
+        <p style="text-align:center; padding: 50px;">Loading product details...</p>
+      </div>
+    </main>
+</div>
 <div class="size-popup" id="size-popup">
   <div class="popup-content">
     <h3>Nhập chiều cao và cân nặng</h3>
@@ -138,156 +45,8 @@
     <p>Contact: info@stylehub.com</p>
   </div>
 </footer>
+
 <script src="js/main.js"></script>
-
-<script>
-  // Lấy ID sản phẩm từ thanh địa chỉ
-  const params = new URLSearchParams(window.location.search);
-  const productId = params.get('id');
-
-  // Gọi API lấy chi tiết sản phẩm từ Server 
-  fetch(`/api/products/${productId}`)
-    .then(res => {
-        if (!res.ok) {
-            // Xử lý nếu server trả về lỗi (ví dụ 404)
-            throw new Error('Lỗi khi lấy dữ liệu sản phẩm');
-        }
-        return res.json();
-    })
-    .then(prod => {
-        // Nếu không tìm thấy sản phẩm hoặc có lỗi từ server
-        if (!prod || prod.message) {
-            document.getElementById('product-detail').innerHTML = '<h2 style="text-align:center; margin-top:50px">Sản phẩm không tồn tại</h2>';
-            return;
-        }
-
-        // Hiển thị thông tin
-        const container = document.getElementById('product-detail');
-        // Sử dụng hàm formatVND từ main.js (nếu main.js đã load)
-        const formatVND = typeof window.formatVND === 'function' ? window.formatVND : (n) => n.toLocaleString('vi-VN') + '₫';
-        const priceFormatted = formatVND(prod.price); 
-        const sizesOptions = prod.sizes.map(sz => `<option value="${sz}">${sz}</option>`).join('');
-
-        container.innerHTML = `
-            <div class="img-gallery">
-              <img src="${prod.img}" alt="${prod.name}">
-            </div>
-            <div class="info">
-              <h1 id="product-name">${prod.name}</h1>
-              <div class="price">${priceFormatted}</div>
-              <div class="description">Mô tả: ${prod.name} - Hàng chính hãng, chất lượng cao từ Style Hub.</div>
-              
-              <div class="option">
-                <label>Size:</label>
-                <select id="select-size">
-                  ${sizesOptions}
-                </select>
-              </div>
-
-              <div class="btns">
-                <button class="btn-size" id="btn-show-size">AI tư vấn size</button>
-                <button class="btn-add" id="btn-add-cart">Add to Cart</button>
-              </div>
-            </div>
-        `;
-
-        // Gắn sự kiện click cho nút Add to Cart
-        document.getElementById('btn-add-cart').addEventListener('click', () => {
-            const size = document.getElementById('select-size').value;
-            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            
-            const existingItem = cart.find(item => item.id === prod.id && item.size === size);
-            if (existingItem) {
-                existingItem.qty = (existingItem.qty || 1) + 1;
-            } else {
-                cart.push({ 
-                    id: prod.id, name: prod.name, price: prod.price, 
-                    size: size, qty: 1, img: prod.img 
-                });
-            }
-            localStorage.setItem('cart', JSON.stringify(cart));
-            // Cập nhật số lượng giỏ hàng sau khi thêm
-            if (typeof updateCartCount === 'function') {
-                updateCartCount(); 
-            }
-            window.location.href = 'cart.html';
-        });
-
-        // Popup tư vấn size (hiện popup)
-        document.getElementById('btn-show-size').addEventListener('click', () => {
-             document.getElementById('size-popup').style.display = 'flex';
-        });
-    })
-    .catch(err => {
-        console.error(err);
-        document.getElementById('product-detail').innerHTML = '<h2 style="text-align:center; margin-top:50px">Không thể kết nối đến server hoặc sản phẩm không tồn tại.</h2>';
-    });
-
-    // ======================================================
-    // LOGIC CẬP NHẬT: XỬ LÝ NÚT GỢI Ý SIZE TÙY CHỈNH
-    // ======================================================
-
-    // 1. Xử lý nút Đóng Popup
-    document.getElementById('btn-close-popup').addEventListener('click', () => {
-        document.getElementById('size-popup').style.display = 'none';
-        document.getElementById('suggested-size').textContent = ''; 
-        document.getElementById('input-height').value = '';
-        document.getElementById('input-weight').value = '';
-    });
-
-    // 2. Xử lý nút Gợi ý size (Logic tính toán tùy chỉnh)
-    document.getElementById('btn-calc-size').addEventListener('click', () => {
-        const height = parseInt(document.getElementById('input-height').value);
-        const weight = parseInt(document.getElementById('input-weight').value);
-        const suggestedEl = document.getElementById('suggested-size');
-
-        // Lấy tên sản phẩm để phân loại
-        // (Sử dụng document.querySelector('#product-name') thay vì 'h1' nếu h1 chưa kịp load)
-        const productNameEl = document.getElementById('product-name');
-        const productName = productNameEl ? productNameEl.textContent.toUpperCase() : '';
-        
-        let sizeChart = 'Jacket/Hoodie'; // Giả định mặc định là Jacket/Áo khoác
-        if (productName.includes('TEE') || productName.includes('POLO') || productName.includes('SLEEVE') || productName.includes('COLLAR')) {
-             sizeChart = 'Shirt/T-shirt'; // Nếu là Áo thun, Polo, hoặc Dài tay
-        }
-
-
-        // Kiểm tra đầu vào hợp lệ
-        if (isNaN(height) || isNaN(weight) || height <= 0 || weight <= 0) {
-            suggestedEl.textContent = 'Vui lòng nhập chiều cao và cân nặng hợp lệ!';
-            return;
-        }
-
-        let size = 'M'; // Giá trị mặc định
-
-        // --- LOGIC GỢI Ý SIZE TÙY CHỈNH THEO LOẠI SẢN PHẨM ---
-        if (sizeChart === 'Shirt/T-shirt') {
-            // Logic cho Áo Thun / Polo (form ôm hơn)
-            if (height >= 175 && weight >= 75) {
-                size = 'L'; // Thường size L cho form vừa, XL cho oversize/người lớn hơn
-            } else if (height >= 170 && weight >= 65) {
-                size = 'M';
-            } else if (height >= 160 && weight >= 50) {
-                size = 'S';
-            } else {
-                size = 'S';
-            }
-        } else {
-            // Logic cho Jacket / Hoodie (form rộng hơn, khuyến khích nhỉnh hơn 1 size so với Shirt)
-            if (height >= 175 && weight >= 75) {
-                size = 'XL';
-            } else if (height >= 170 && weight >= 65) {
-                size = 'L';
-            } else if (height >= 160 && weight >= 50) {
-                size = 'M';
-            } else {
-                size = 'S';
-            }
-        }
-        // ----------------------------------------------------
-        
-        suggestedEl.textContent = `Gợi ý (${sizeChart}): Size ${size} là phù hợp nhất!`;
-    });
-</script>
+<script src="js/productDetail.js"></script> 
 </body>
 </html>
