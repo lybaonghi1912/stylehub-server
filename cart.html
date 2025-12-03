@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cart & Checkout – STYLE HUB</title>
 <link rel="stylesheet" href="css/style.css">
-<script src="js/data.js"></script>
-<style>
+<script defer src="js/main.js"></script> <style>
 /* Body + background */
 body {
   background: linear-gradient(to right, #f7f7f7, #ffffff);
@@ -170,8 +169,7 @@ footer p {margin-bottom:5px;}
   <div class="popup-content">
     <h3>Thank you for your order!</h3>
     <p>Your order has been placed successfully.</p>
-    <p id="order-total"></p>
-    <button id="btn-close-complete">Close</button>
+    <p id="order-total"></p> <button id="btn-close-complete">Close</button>
   </div>
 </div>
 
@@ -183,34 +181,26 @@ footer p {margin-bottom:5px;}
 </footer>
 
 <script>
-// ===== Cart logic =====
-function formatVND(n){ return n.toLocaleString('vi-VN')+'₫'; }
+// Kiểm tra và sử dụng formatVND, updateCartCount từ main.js
+// Nếu main.js chưa load kịp, định nghĩa hàm cơ bản để tránh lỗi
+if (typeof formatVND === 'undefined') {
+    function formatVND(n){ return n.toLocaleString('vi-VN')+'₫'; }
+}
+if (typeof updateCartCount === 'undefined') {
+    function updateCartCount(){ 
+        const cart = JSON.parse(localStorage.getItem('cart')||'[]');
+        const total = cart.reduce((a,b)=>a+(b.qty||1),0);
+        const el = document.getElementById('cart-count');
+        if(el) el.textContent = total; 
+    }
+}
 
 let cart = [];
 try{ cart = JSON.parse(localStorage.getItem('cart')||'[]'); } catch(e){ cart=[]; }
 
-// --- TÍNH NĂNG ĐỒNG BỘ MỚI ---
-// Tự động kiểm tra và cập nhật thông tin sản phẩm (ảnh, giá) từ data.js
-// Giúp sửa lỗi ảnh bị sai do dữ liệu cũ trong LocalStorage
-if (typeof products !== 'undefined') {
-    cart = cart.map(cartItem => {
-        // Tìm sản phẩm gốc trong data.js
-        const originalProduct = products.find(p => p.id === cartItem.id);
-        if (originalProduct) {
-            // Cập nhật lại ảnh, tên và giá từ nguồn chính để đảm bảo luôn đúng
-            return {
-                ...cartItem,
-                name: originalProduct.name,
-                price: originalProduct.price,
-                img: originalProduct.img // <--- Đây là dòng fix lỗi ảnh tự động
-            };
-        }
-        return cartItem;
-    });
-    // Lưu ngược lại vào localStorage để lần sau không cần cập nhật nữa
-    localStorage.setItem('cart', JSON.stringify(cart));
-}
-// -----------------------------
+// --- LOGIC ĐỒNG BỘ CŨ ĐÃ BỊ XÓA VÌ data.js KHÔNG CÒN TỒN TẠI ---
+// Nếu bạn muốn đồng bộ lại giá/ảnh, bạn cần gọi API Server tại đây
+// Nhưng hiện tại, chúng ta chỉ dựa vào dữ liệu đã lưu trong localStorage
 
 const cartTableBody = document.querySelector('#cart-table tbody');
 const cartSummary = document.getElementById('cart-summary');
@@ -219,7 +209,6 @@ const checkoutForm = document.getElementById('checkout-form');
 const popupComplete = document.getElementById('popup-complete');
 const orderTotalEl = document.getElementById('order-total');
 
-function updateCartCount(){ cartCountEl.textContent = cart.reduce((a,b)=>a+(b.qty||1),0); }
 updateCartCount();
 
 let removeIndex = null;
@@ -282,29 +271,97 @@ function renderCart(){
 
 document.getElementById('btn-cancel').addEventListener('click',()=>{ document.getElementById('popup-confirm').style.display='none'; removeIndex=null; });
 document.getElementById('btn-confirm').addEventListener('click',()=>{
-  if(removeIndex!==null){ cart.splice(removeIndex,1); localStorage.setItem('cart',JSON.stringify(cart)); renderCart(); updateCartCount(); removeIndex=null; document.getElementById('popup-confirm').style.display='none'; }
+  if(removeIndex!==null){ 
+    cart.splice(removeIndex,1); 
+    localStorage.setItem('cart',JSON.stringify(cart)); 
+    renderCart(); 
+    updateCartCount(); 
+    removeIndex=null; 
+    document.getElementById('popup-confirm').style.display='none'; 
+  }
 });
 
 document.getElementById('btn-continue').addEventListener('click',()=>{ location.href='products.html'; });
 document.getElementById('btn-checkout').addEventListener('click',()=>{ checkoutForm.style.display='block'; checkoutForm.scrollIntoView({behavior:'smooth'}); });
 
-document.getElementById('btn-submit-order').addEventListener('click',()=>{
-  const name=document.getElementById('customer-name').value.trim();
-  const email=document.getElementById('customer-email').value.trim();
-  const phone=document.getElementById('customer-phone').value.trim();
-  const address=document.getElementById('customer-address').value.trim();
-  if(!name||!email||!phone||!address){ alert('Please fill in all required fields'); return; }
+// ===== LOGIC ĐẶT HÀNG CẬP NHẬT (Gửi dữ liệu chi tiết lên API) =====
+document.getElementById('btn-submit-order').addEventListener('click', async () => {
+  const name = document.getElementById('customer-name').value.trim();
+  const email = document.getElementById('customer-email').value.trim();
+  const phone = document.getElementById('customer-phone').value.trim();
+  const address = document.getElementById('customer-address').value.trim();
+  const note = document.getElementById('customer-note').value.trim();
 
-  let subtotal=0; cart.forEach(item=>{ subtotal+=item.price*(item.qty||1); });
-  const shipping=50000;
-  const discount=subtotal*0.1;
-  const total=subtotal-discount+shipping;
+  // 1. Kiểm tra thông tin
+  if (!name || !email || !phone || !address) { 
+    alert('Vui lòng điền đầy đủ thông tin bắt buộc.'); 
+    return; 
+  }
+  
+  if (cart.length === 0) {
+    alert('Giỏ hàng của bạn đang trống.');
+    return;
+  }
 
-  orderTotalEl.textContent=`Total Paid: ${formatVND(total)}`;
-  popupComplete.style.display='flex';
+  // 2. TÍNH TOÁN TỔNG TIỀN
+  let subtotal = 0; 
+  cart.forEach(item => { subtotal += item.price * (item.qty || 1); });
+  const shipping = 50000;
+  const discount = subtotal * 0.1;
+  const total = subtotal - discount + shipping;
 
-  cart=[]; localStorage.setItem('cart',JSON.stringify(cart));
-  renderCart();
+  // 3. TẠO OBJECT ĐƠN HÀNG CHI TIẾT
+  const orderDetails = {
+    customer: { name, email, phone, address, note },
+    items: cart.map(item => ({ 
+      id: item.id, 
+      name: item.name, 
+      size: item.size, 
+      qty: item.qty || 1, 
+      price: item.price,
+      subtotal: item.price * (item.qty || 1)
+    })),
+    summary: { 
+      subtotal: subtotal, 
+      discount: discount, 
+      shipping: shipping, 
+      total: total 
+    },
+    orderDate: new Date().toISOString()
+  };
+
+  // 4. GỌI API GỬI ĐƠN HÀNG
+  try {
+      const response = await fetch('/api/order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderDetails)
+      });
+      const result = await response.json();
+      
+      if (result.success) {
+          // HIỂN THỊ THÔNG TIN CHI TIẾT ĐÃ ĐẶT LÊN POPUP
+          orderTotalEl.innerHTML = `
+            <p>Mã đơn hàng: <b>#${result.orderId}</b></p>
+            <p>Khách hàng: <b>${name}</b></p>
+            <p>Giao đến: <b>${address}</b></p>
+            <p style="font-size: 24px; color: #000; margin-top: 10px;">Tổng tiền: <b>${formatVND(total)}</b></p>
+          `;
+          popupComplete.style.display = 'flex';
+
+          // DỌN DẸP GIỎ HÀNG
+          cart = [];
+          localStorage.setItem('cart', JSON.stringify(cart));
+          renderCart();
+          updateCartCount();
+      } else {
+          alert('Lỗi đặt hàng: ' + result.message);
+      }
+
+  } catch (e) {
+      alert('Lỗi kết nối Server. Vui lòng thử lại sau.');
+      console.error(e);
+  }
 });
 
 document.getElementById('btn-close-complete').addEventListener('click',()=>{ popupComplete.style.display='none'; });

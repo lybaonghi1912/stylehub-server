@@ -11,9 +11,7 @@ app.use(express.json());
 
 // ************************************************************
 // FIX 1: PHỤC VỤ FILE TĨNH VÀ KHẮC PHỤC LỖI "Cannot GET /"
-// Dòng này phục vụ tất cả file tĩnh từ thư mục gốc (__dirname).
 // ************************************************************
-// Lưu ý: path.resolve(__dirname) cũng hoạt động tốt và là cách chuẩn.
 app.use(express.static(path.join(__dirname)));
 
 
@@ -47,16 +45,28 @@ app.get('/api/products/:id', (req, res) => {
   else res.status(404).json({ message: "Sản phẩm không tồn tại" });
 });
 
-// API: Đặt hàng
+// API: Đặt hàng (ĐÃ CẬP NHẬT để nhận và trả về orderId)
 app.post('/api/order', (req, res) => {
-  console.log("Đơn hàng nhận được:", req.body);
-  res.json({ success: true, message: "Đặt hàng thành công!" });
+  const orderData = req.body;
+  
+  // Ghi log đơn hàng chi tiết đã nhận
+  console.log("-----------------------------------------");
+  console.log(`Đơn hàng mới từ: ${orderData.customer.name}`);
+  console.log(`Tổng cộng: ${orderData.summary.total.toLocaleString('vi-VN')}₫`); 
+  console.log(`Số lượng SP: ${orderData.items.length}`);
+  console.log("Chi tiết đơn hàng đã được nhận tại Server.");
+  console.log("-----------------------------------------");
+  
+  // Giả lập xử lý thành công và trả về orderId (timestamp)
+  res.json({ 
+    success: true, 
+    message: "Đặt hàng thành công!",
+    orderId: Date.now() // TRẢ VỀ MÃ ĐƠN HÀNG GIẢ LẬP
+  });
 });
 
 // ************************************************************
 // FIX 1 (tiếp): Định nghĩa Route cho trang chủ
-// Nếu Express không tìm thấy file tĩnh (index.html) ở route /, 
-// dòng này sẽ đảm bảo nó được trả về.
 // ************************************************************
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));

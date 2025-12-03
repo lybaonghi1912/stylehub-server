@@ -145,7 +145,7 @@
   const params = new URLSearchParams(window.location.search);
   const productId = params.get('id');
 
-  // Gọi API lấy chi tiết sản phẩm từ Server (ĐÃ FIX: Sử dụng đường dẫn tương đối /api/products)
+  // Gọi API lấy chi tiết sản phẩm từ Server 
   fetch(`/api/products/${productId}`)
     .then(res => {
         if (!res.ok) {
@@ -164,7 +164,8 @@
         // Hiển thị thông tin
         const container = document.getElementById('product-detail');
         // Sử dụng hàm formatVND từ main.js (nếu main.js đã load)
-        const priceFormatted = prod.price.toLocaleString('vi-VN') + '₫'; 
+        const formatVND = typeof window.formatVND === 'function' ? window.formatVND : (n) => n.toLocaleString('vi-VN') + '₫';
+        const priceFormatted = formatVND(prod.price); 
         const sizesOptions = prod.sizes.map(sz => `<option value="${sz}">${sz}</option>`).join('');
 
         container.innerHTML = `
@@ -172,7 +173,7 @@
               <img src="${prod.img}" alt="${prod.name}">
             </div>
             <div class="info">
-              <h1>${prod.name}</h1>
+              <h1 id="product-name">${prod.name}</h1>
               <div class="price">${priceFormatted}</div>
               <div class="description">Mô tả: ${prod.name} - Hàng chính hãng, chất lượng cao từ Style Hub.</div>
               
@@ -223,7 +224,7 @@
     });
 
     // ======================================================
-    // LOGIC ĐÃ FIX: XỬ LÝ NÚT GỢI Ý SIZE VÀ ĐÓNG POPUP
+    // LOGIC CẬP NHẬT: XỬ LÝ NÚT GỢI Ý SIZE TÙY CHỈNH
     // ======================================================
 
     // 1. Xử lý nút Đóng Popup
@@ -234,11 +235,22 @@
         document.getElementById('input-weight').value = '';
     });
 
-    // 2. Xử lý nút Gợi ý size (Logic tính toán cơ bản)
+    // 2. Xử lý nút Gợi ý size (Logic tính toán tùy chỉnh)
     document.getElementById('btn-calc-size').addEventListener('click', () => {
         const height = parseInt(document.getElementById('input-height').value);
         const weight = parseInt(document.getElementById('input-weight').value);
         const suggestedEl = document.getElementById('suggested-size');
+
+        // Lấy tên sản phẩm để phân loại
+        // (Sử dụng document.querySelector('#product-name') thay vì 'h1' nếu h1 chưa kịp load)
+        const productNameEl = document.getElementById('product-name');
+        const productName = productNameEl ? productNameEl.textContent.toUpperCase() : '';
+        
+        let sizeChart = 'Jacket/Hoodie'; // Giả định mặc định là Jacket/Áo khoác
+        if (productName.includes('TEE') || productName.includes('POLO') || productName.includes('SLEEVE') || productName.includes('COLLAR')) {
+             sizeChart = 'Shirt/T-shirt'; // Nếu là Áo thun, Polo, hoặc Dài tay
+        }
+
 
         // Kiểm tra đầu vào hợp lệ
         if (isNaN(height) || isNaN(weight) || height <= 0 || weight <= 0) {
@@ -248,18 +260,33 @@
 
         let size = 'M'; // Giá trị mặc định
 
-        // Logic gợi ý size (Bạn có thể tinh chỉnh logic này sau)
-        if (height >= 175 && weight >= 75) {
-            size = 'XL';
-        } else if (height >= 170 && weight >= 65) {
-            size = 'L';
-        } else if (height >= 160 && weight >= 50) {
-            size = 'M';
+        // --- LOGIC GỢI Ý SIZE TÙY CHỈNH THEO LOẠI SẢN PHẨM ---
+        if (sizeChart === 'Shirt/T-shirt') {
+            // Logic cho Áo Thun / Polo (form ôm hơn)
+            if (height >= 175 && weight >= 75) {
+                size = 'L'; // Thường size L cho form vừa, XL cho oversize/người lớn hơn
+            } else if (height >= 170 && weight >= 65) {
+                size = 'M';
+            } else if (height >= 160 && weight >= 50) {
+                size = 'S';
+            } else {
+                size = 'S';
+            }
         } else {
-            size = 'S';
+            // Logic cho Jacket / Hoodie (form rộng hơn, khuyến khích nhỉnh hơn 1 size so với Shirt)
+            if (height >= 175 && weight >= 75) {
+                size = 'XL';
+            } else if (height >= 170 && weight >= 65) {
+                size = 'L';
+            } else if (height >= 160 && weight >= 50) {
+                size = 'M';
+            } else {
+                size = 'S';
+            }
         }
+        // ----------------------------------------------------
         
-        suggestedEl.textContent = `Gợi ý: Size ${size} là phù hợp nhất!`;
+        suggestedEl.textContent = `Gợi ý (${sizeChart}): Size ${size} là phù hợp nhất!`;
     });
 </script>
 </body>
